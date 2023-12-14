@@ -8,9 +8,7 @@ module.exports = {
     const needle = require("needle");
 
     const characterCode = getCharacterCode(args[0]);
-    // const geppoURL = getGeppoUrl(characterCode);
-    const geppoUrl =
-      "https://geppopotamus.info/game/tekken7fr/bryan/data_en.htm#page_top";
+    const geppoUrl = getGeppoUrl(characterCode);
 
     console.log("Attempting to fetch data...");
     needle.get(geppoUrl, (err, res) => {
@@ -97,16 +95,53 @@ module.exports = {
   },
 };
 
-// function getGeppoUrl(characterCode) {
-//   var baseURL = `https://geppopotamus.info/game/tekken7fr/${characterCode}/data_en.htm#page_top`;
-//   return baseURL;
-// }
+function getGeppoUrl(characterCode) {
+  var baseURL = `https://geppopotamus.info/game/tekken7fr/${characterCode}/data_en.htm#page_top`;
+  return baseURL;
+}
 
 function getCharacterCode(character) {
-  switch (character) {
-    case ("armorking", "ak", "amk"):
-      return "amking";
-    default:
-      return "bryan";
-  }
+  const characterCodes = {
+    akuma: "gouki",
+    alisa: "alisa",
+    anna: "anna",
+    armor_king: "amking",
+    asuka: "asuka",
+    bob: "bob",
+    bryan: "bryan",
+    claudio: "claudio",
+    devil_jin: "devil",
+    dragunov: "dragunov",
+    // Add remaining characters here
+    kazuya: "kazuya",
+    // Add remaining characters here
+  };
+
+  const characterMap = {
+    gouki: characterCodes.akuma,
+    akuma: characterCodes.akuma,
+    aku: characterCodes.akuma,
+
+    alisa: characterCodes.alisa,
+    alis: characterCodes.alisa,
+    als: characterCodes.alisa,
+
+    anna: characterCodes.anna,
+    ann: characterCodes.anna,
+
+    armorking: characterCodes.armor_king,
+    ak: characterCodes.armor_king,
+    amk: characterCodes.armor_king,
+
+    kaz: characterCodes.kazuya,
+    kazuya: characterCodes.kazuya,
+
+    deviljin: characterCodes.devil_jin,
+    devil: characterCodes.devil_jin,
+    dj: characterCodes.devil_jin,
+  };
+
+  character = character.toLowerCase();
+
+  return characterMap[character] || "bryan";
 }
