@@ -1,0 +1,9 @@
+module.exports = {
+  name: "",
+  category: "",
+  permissions: [],
+  devOnly: false,
+  run: async ({ client, msg, args }) => {
+    return;
+  },
+};
