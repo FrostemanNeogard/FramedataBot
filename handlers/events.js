@@ -60,7 +60,6 @@ function InitEvents(bot) {
   });
 
   client.on("messageCreate", (msg) => {
-    console.log("Message:", msg);
-    // TriggerEventHandler(bot, "messageCreate", msg);
+    TriggerEventHandler(bot, "messageCreate", msg);
   });
 }
