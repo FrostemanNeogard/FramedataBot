@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "needle": "^3.3.1"
   },
   "name": "gttc",
   "version": "1.0.0",
