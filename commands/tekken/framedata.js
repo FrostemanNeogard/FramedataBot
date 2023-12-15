@@ -94,6 +94,11 @@ module.exports = {
         `${attackNotes ? `Notes: ${attackNotes}\n` : ""}`,
       ];
 
+      const formattedResponse = response.join("");
+      if (formattedResponse === "") {
+        return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
+      }
+
       return msg.reply(response.join(""));
     });
 
