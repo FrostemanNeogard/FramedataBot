@@ -9,16 +9,20 @@ module.exports = {
 
     const characterCode = getCharacterCode(args[0]);
     if (!characterCode) {
+      console.error(`Couldn't find character: ${args[0]}`);
       return msg.reply(`Couldn't find character: "${args[0]}".`);
     }
     if (args.length < 2) {
+      console.error(`No notation given.`);
       return msg.reply("Please provide a move in tekken notation.");
     }
-    const geppoUrl = getGeppoUrl(characterCode);
 
-    console.log("Attempting to fetch data...");
+    const geppoUrl = getGeppoUrl(characterCode);
+    console.log("Attempting to fetch data from:", geppoUrl);
+
     needle.get(geppoUrl, (err, res) => {
       if (err || res.statusCode !== 200) {
+        console.error("Couldn't fetch data.");
         return msg.reply(
           "An error occurred when fetching data. Please try again later."
         );
@@ -40,6 +44,29 @@ module.exports = {
         ub: "7",
         u: "8",
         uf: "9",
+
+        DB: "1'",
+        D: "2'",
+        DF: "3'",
+        B: "4'",
+        N: "5'",
+        F: "6'",
+        UB: "7'",
+        U: "8'",
+        UF: "9'",
+
+        "1+2": "p",
+        "3+4": "k",
+        "1+3": "l",
+        "2+4": "r",
+        "1+4": "lpk",
+        "2+3": "rpk",
+
+        "1+2+3": "wplk",
+        "1+3+4": "lpwk",
+        "2+3+4": "rpwk",
+        "1+2+4": "wprk",
+        "1+2+3+4": "a",
       };
       const reverseInputFormattingMap = {};
       Object.keys(inputFormattingMap).forEach((key) => {
@@ -49,6 +76,9 @@ module.exports = {
       const unformattedInputs = args.slice(1);
       const formattedInputs = unformattedInputs.map(
         (element) => `../${inputFormattingMap[element]}.gif`
+      );
+      console.log(
+        `Parsing for input:"${unformattedInputs}". Formatted: ${formattedInputs}`
       );
 
       const searchQuery = formattedInputs
@@ -96,13 +126,13 @@ module.exports = {
 
       const formattedResponse = response.join("");
       if (formattedResponse === "") {
+        console.error("Couldn't find the given move.");
         return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
       }
 
+      console.log("Replying with: ", response);
       return msg.reply(response.join(""));
     });
-
-    return;
   },
 };
 
