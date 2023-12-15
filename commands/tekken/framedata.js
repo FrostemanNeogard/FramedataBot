@@ -87,7 +87,7 @@ module.exports = {
       const response = [
         `${attackName ? `Name: ${attackName}\n` : ""}`,
         `${attackInputs.length > 0 ? `Input: ${attackInputs}\n` : ""}`,
-        `${attackStartup ? `Startup: ${attackStartup}\n` : ""}`,
+        `${attackStartup.length > 1 ? `Startup: ${attackStartup}\n` : ""}`,
         `${attackBlock ? `On Block: ${attackBlock}\n` : ""}`,
         `${attackHit ? `On Hit: ${attackHit}\n` : ""}`,
         `${attackCounter ? `On Counter: ${attackCounter}\n` : ""}`,
