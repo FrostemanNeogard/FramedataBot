@@ -6,6 +6,7 @@ module.exports = {
   run: async ({ client, msg, args }) => {
     const cheerio = require("cheerio");
     const needle = require("needle");
+    const { MessageEmbed } = require("discord.js");
 
     const characterCode = getCharacterCode(args[0]);
     if (!characterCode) {
@@ -87,6 +88,7 @@ module.exports = {
             .text()
             .trim()
             .toLowerCase();
+          tdText = tdText.replace(/ *\([^)]*\) */g, "");
           tdText = tdText.toLowerCase();
           tdText = tdText.split("or");
           tdText = tdText.length === 0 ? tdText[0] : tdText[tdText.length - 1];
@@ -115,20 +117,36 @@ module.exports = {
         return msg.reply(`Couldn't find the given move: ${formattedInputs}.`);
       }
 
-      const response = [
-        `Input: ${attackInfo.input}`,
-        `Hit Level(s): ${attackInfo.hitLevel}`,
-        `Damage: ${attackInfo.damage}`,
-        `Startup: ${attackInfo.startup}`,
-        `On Block: ${attackInfo.block}`,
-        `On Hit: ${attackInfo.hit}`,
-        `On Counter: ${attackInfo.counter}`,
-        `Notes: ${attackInfo.notes}`,
-      ];
+      const formattedCharacterName = characterCode.toUpperCase();
+      const responseEmbed = new MessageEmbed()
+        .setColor(0x00ff00)
+        .setTitle(formattedCharacterName)
+        .setURL(geppoUrl)
+        .setDescription(`Move: ${attackInfo.input}`)
+        .addFields(
+          { name: "Input", value: attackInfo.input ?? " ", inline: true },
+          {
+            name: "Hit Level",
+            value: attackInfo.hitLevel ?? " ",
+            inline: true,
+          },
+          { name: "Damage", value: attackInfo.damage ?? " ", inline: true },
+          { name: "Startup", value: attackInfo.startup ?? " ", inline: true },
+          { name: "Block", value: attackInfo.block ?? " ", inline: true },
+          { name: "Hit", value: attackInfo.hit ?? " ", inline: true },
+          { name: "Counter", value: attackInfo.counter ?? " ", inline: true }
+        )
+        .setFooter({
+          text: `Please report any issues to "${process.env.OWNER_NAME}" on discord.`,
+        });
 
-      const formattedResponse = response.join("\n");
-      console.log("Replying with: ", formattedResponse);
-      return msg.reply(formattedResponse);
+      attackInfo.notes.length > 0 &&
+        responseEmbed.addFields({
+          name: "Notes",
+          value: attackInfo.notes,
+        });
+      console.log("Replying with: ", responseEmbed);
+      return msg.reply({ embeds: [responseEmbed] });
     });
   },
 };
