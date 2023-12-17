@@ -105,7 +105,6 @@ module.exports = {
         .setDescription(`Move: ${attackInfo.input}`);
 
       const fields = [
-        { name: "Input", value: attackInfo.input, inline: true },
         { name: "Hit Level", value: attackInfo.hitLevel, inline: true },
         { name: "Damage", value: attackInfo.damage, inline: true },
         { name: "Startup", value: attackInfo.startup, inline: true },
