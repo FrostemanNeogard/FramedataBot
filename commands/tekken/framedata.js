@@ -73,71 +73,68 @@ module.exports = {
         reverseInputFormattingMap[inputFormattingMap[key]] = key;
       });
 
-      const unformattedInputs = args.slice(1);
-      const formattedInputs = unformattedInputs.map(
-        (element) => `../${inputFormattingMap[element]}.gif`
-      );
-      console.log(
-        `Parsing for input:"${unformattedInputs}". Formatted: ${formattedInputs}`
-      );
+      let formattedInputs = args.slice(1).join("");
+      formattedInputs = formattedInputs.replaceAll(" ", "");
+      formattedInputs = formattedInputs.replaceAll(",", "");
+      formattedInputs = formattedInputs.replaceAll("/", "");
+      formattedInputs = formattedInputs.replaceAll("+", "");
 
-      const searchQuery = formattedInputs
-        .map((gifName) => {
-          return `img[src="${gifName}"]`;
+      const attackRow = $("tr:has(td)")
+        .filter((index, element) => {
+          let tdText = $(element)
+            .find("td")
+            .first()
+            .text()
+            .trim()
+            .toLowerCase();
+          tdText = tdText.toLowerCase();
+          tdText = tdText.split("or");
+          tdText = tdText.length === 0 ? tdText[0] : tdText[tdText.length - 1];
+          tdText = tdText.split("in rage");
+          tdText = tdText.length === 0 ? tdText[0] : tdText[tdText.length - 1];
+          tdText = tdText.replaceAll(" ", "");
+          tdText = tdText.replaceAll(",", "");
+          tdText = tdText.replaceAll("/", "");
+          tdText = tdText.replaceAll("+", "");
+          return tdText == formattedInputs;
         })
-        .join(" + ");
+        .first();
+      const attackInfo = {
+        input: attackRow.find("td:eq(0)").text(),
+        hitLevel: attackRow.find("td:eq(1)").text(),
+        damage: attackRow.find("td:eq(2)").text(),
+        startup: attackRow.find("td:eq(3)").text(),
+        block: attackRow.find("td:eq(4)").text(),
+        hit: attackRow.find("td:eq(5)").text(),
+        counter: attackRow.find("td:eq(6)").text(),
+        notes: attackRow.find("td:eq(7)").text(),
+      };
 
-      const attackRow = $(
-        `table.fr tr:has(td.td_label ${searchQuery})`
-      ).first();
-      const attackName = attackRow.find("td.td_label > span").text();
-      const attackInputElements = attackRow.find(
-        "td.td_label div.command_line img"
-      );
-      const attackInputs = [];
-      for (input of attackInputElements) {
-        const gifName = $(input).attr("src");
-        const formattedGifName = gifName.substring(3, gifName.length - 4);
-        attackInputs.push(reverseInputFormattingMap[formattedGifName]);
+      if (attackRow.length < 1) {
+        console.error("Couldn't find the given move.");
+        return msg.reply(`Couldn't find the given move: ${formattedInputs}.`);
       }
-
-      const attackStartup = attackRow.find("td.td_value").first().text();
-      const attackBlock = attackRow.find("td.td_value:eq(1)").text();
-      const attackHit = attackRow.find("td.td_value:eq(2)").text();
-      const attackCounter = attackRow.find("td.td_value:eq(3)").text();
-      const attackNotes = attackRow
-        .find("td")
-        .last()
-        .clone()
-        .find("div.uaccbox")
-        .remove()
-        .end()
-        .text();
 
       const response = [
-        `${attackName ? `Name: ${attackName}\n` : ""}`,
-        `${attackInputs.length > 0 ? `Input: ${attackInputs}\n` : ""}`,
-        `${attackStartup.length > 1 ? `Startup: ${attackStartup}\n` : ""}`,
-        `${attackBlock ? `On Block: ${attackBlock}\n` : ""}`,
-        `${attackHit ? `On Hit: ${attackHit}\n` : ""}`,
-        `${attackCounter ? `On Counter: ${attackCounter}\n` : ""}`,
-        `${attackNotes ? `Notes: ${attackNotes}\n` : ""}`,
+        `Input: ${attackInfo.input}`,
+        `Hit Level(s): ${attackInfo.hitLevel}`,
+        `Damage: ${attackInfo.damage}`,
+        `Startup: ${attackInfo.startup}`,
+        `On Block: ${attackInfo.block}`,
+        `On Hit: ${attackInfo.hit}`,
+        `On Counter: ${attackInfo.counter}`,
+        `Notes: ${attackInfo.notes}`,
       ];
 
-      const formattedResponse = response.join("");
-      if (formattedResponse === "") {
-        console.error("Couldn't find the given move.");
-        return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
-      }
-
-      console.log("Replying with: ", response);
-      return msg.reply(response.join(""));
+      const formattedResponse = response.join("\n");
+      console.log("Replying with: ", formattedResponse);
+      return msg.reply(formattedResponse);
     });
   },
 };
 
 function getGeppoUrl(characterCode) {
-  var baseURL = `https://geppopotamus.info/game/tekken7fr/${characterCode}/data_en.htm#page_top`;
+  const baseURL = `https://rbnorway.org/${characterCode}-t7-frames/`;
   return baseURL;
 }
 
