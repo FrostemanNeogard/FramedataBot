@@ -18,10 +18,10 @@ module.exports = {
       return msg.reply("Please provide a move in tekken notation.");
     }
 
-    const geppoUrl = getGeppoUrl(characterCode);
-    console.log("Attempting to fetch data from:", geppoUrl);
+    const rbnURL = getRbnUrl(characterCode);
+    console.log("Attempting to fetch data from:", rbnURL);
 
-    needle.get(geppoUrl, (err, res) => {
+    needle.get(rbnURL, (err, res) => {
       if (err || res.statusCode !== 200) {
         console.error("Couldn't fetch data.");
         return msg.reply(
@@ -29,7 +29,7 @@ module.exports = {
         );
       }
 
-      let $ = cheerio.load(res.body, { decodeEntities: false });
+      const $ = cheerio.load(res.body, { decodeEntities: false });
 
       const inputFormattingMap = {
         1: "lp",
@@ -74,45 +74,25 @@ module.exports = {
         reverseInputFormattingMap[inputFormattingMap[key]] = key;
       });
 
-      let formattedInputs = args.slice(1).join("");
-      formattedInputs = formattedInputs.replaceAll(" ", "");
-      formattedInputs = formattedInputs.replaceAll(",", "");
-      formattedInputs = formattedInputs.replaceAll("/", "");
-      formattedInputs = formattedInputs.replaceAll("+", "");
+      const unformattedInputs = args.slice(1).join("");
 
-      const attackRow = $("tr:has(td)")
-        .filter((index, element) => {
-          let tdText = $(element)
-            .find("td")
-            .first()
-            .text()
-            .trim()
-            .toLowerCase();
-          tdText = tdText.replace(/ *\([^)]*\) */g, "");
-          tdText = tdText.toLowerCase();
-          tdText = tdText.split("or");
-          tdText = tdText.length === 0 ? tdText[0] : tdText[tdText.length - 1];
-          tdText = tdText.split("in rage");
-          tdText = tdText.length === 0 ? tdText[0] : tdText[tdText.length - 1];
-          tdText = tdText.replaceAll(" ", "");
-          tdText = tdText.replaceAll(",", "");
-          tdText = tdText.replaceAll("/", "");
-          tdText = tdText.replaceAll("+", "");
-          return tdText == formattedInputs;
-        })
-        .first();
+      let matchedInput = checkForInput($, unformattedInputs);
+      if (matchedInput.length < 1) {
+        matchedInput = checkForInput($, unformattedInputs, true);
+      }
+
       const attackInfo = {
-        input: attackRow.find("td:eq(0)").text(),
-        hitLevel: attackRow.find("td:eq(1)").text(),
-        damage: attackRow.find("td:eq(2)").text(),
-        startup: attackRow.find("td:eq(3)").text(),
-        block: attackRow.find("td:eq(4)").text(),
-        hit: attackRow.find("td:eq(5)").text(),
-        counter: attackRow.find("td:eq(6)").text(),
-        notes: attackRow.find("td:eq(7)").text(),
+        input: matchedInput.find("td:eq(0)").text(),
+        hitLevel: matchedInput.find("td:eq(1)").text(),
+        damage: matchedInput.find("td:eq(2)").text(),
+        startup: matchedInput.find("td:eq(3)").text(),
+        block: matchedInput.find("td:eq(4)").text(),
+        hit: matchedInput.find("td:eq(5)").text(),
+        counter: matchedInput.find("td:eq(6)").text(),
+        notes: matchedInput.find("td:eq(7)").text(),
       };
 
-      if (attackRow.length < 1) {
+      if (matchedInput.length < 1) {
         console.error("Couldn't find the given move.");
         return msg.reply(`Couldn't find the given move: ${formattedInputs}.`);
       }
@@ -121,37 +101,72 @@ module.exports = {
       const responseEmbed = new MessageEmbed()
         .setColor(0x00ff00)
         .setTitle(formattedCharacterName)
-        .setURL(geppoUrl)
-        .setDescription(`Move: ${attackInfo.input}`)
-        .addFields(
-          { name: "Input", value: attackInfo.input ?? " ", inline: true },
-          {
-            name: "Hit Level",
-            value: attackInfo.hitLevel ?? " ",
-            inline: true,
-          },
-          { name: "Damage", value: attackInfo.damage ?? " ", inline: true },
-          { name: "Startup", value: attackInfo.startup ?? " ", inline: true },
-          { name: "Block", value: attackInfo.block ?? " ", inline: true },
-          { name: "Hit", value: attackInfo.hit ?? " ", inline: true },
-          { name: "Counter", value: attackInfo.counter ?? " ", inline: true }
-        )
-        .setFooter({
-          text: `Please report any issues to "${process.env.OWNER_NAME}" on discord.`,
-        });
+        .setURL(rbnURL)
+        .setDescription(`Move: ${attackInfo.input}`);
 
-      attackInfo.notes.length > 0 &&
-        responseEmbed.addFields({
-          name: "Notes",
-          value: attackInfo.notes,
-        });
+      const fields = [
+        { name: "Input", value: attackInfo.input, inline: true },
+        { name: "Hit Level", value: attackInfo.hitLevel, inline: true },
+        { name: "Damage", value: attackInfo.damage, inline: true },
+        { name: "Startup", value: attackInfo.startup, inline: true },
+        { name: "Block", value: attackInfo.block, inline: true },
+        { name: "Hit", value: attackInfo.hit, inline: true },
+        { name: "Counter", value: attackInfo.counter, inline: true },
+        { name: "Notes", value: attackInfo.notes },
+      ];
+
+      fields.forEach((field) => {
+        if (field.value !== undefined && field.value !== "") {
+          responseEmbed.addField(field.name, field.value, field.inline);
+        }
+      });
+
+      responseEmbed.setFooter({
+        text: `Please report any issues to "${process.env.OWNER_NAME}" on discord.`,
+      });
+
       console.log("Replying with: ", responseEmbed);
       return msg.reply({ embeds: [responseEmbed] });
     });
   },
 };
 
-function getGeppoUrl(characterCode) {
+function formatNotation(inputNotation, removePlus) {
+  let modifiedNotation = inputNotation;
+  modifiedNotation = modifiedNotation.replace(/ *\([^)]*\) */g, "");
+  modifiedNotation = modifiedNotation.toLowerCase();
+  modifiedNotation = modifiedNotation.split("or");
+  modifiedNotation =
+    modifiedNotation.length === 0
+      ? modifiedNotation[0]
+      : modifiedNotation[modifiedNotation.length - 1];
+  modifiedNotation = modifiedNotation.split("in rage");
+  modifiedNotation =
+    modifiedNotation.length === 0
+      ? modifiedNotation[0]
+      : modifiedNotation[modifiedNotation.length - 1];
+  modifiedNotation = modifiedNotation.replaceAll(" ", "");
+  modifiedNotation = modifiedNotation.replaceAll(",", "");
+  modifiedNotation = modifiedNotation.replaceAll("/", "");
+  if (removePlus) {
+    modifiedNotation = modifiedNotation.replaceAll("+", "");
+  }
+  return modifiedNotation;
+}
+
+function checkForInput($, unformattedInputs, removePlus = false) {
+  const formattedInputs = formatNotation(unformattedInputs, removePlus);
+  const attackRow = $("tr:has(td)")
+    .filter((index, element) => {
+      let tdText = $(element).find("td").first().text().trim().toLowerCase();
+      tdText = formatNotation(tdText, removePlus);
+      return tdText == formattedInputs;
+    })
+    .first();
+  return attackRow;
+}
+
+function getRbnUrl(characterCode) {
   const baseURL = `https://rbnorway.org/${characterCode}-t7-frames/`;
   return baseURL;
 }
