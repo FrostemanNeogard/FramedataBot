@@ -94,7 +94,7 @@ module.exports = {
 
       if (matchedInput.length < 1) {
         console.error("Couldn't find the given move.");
-        return msg.reply(`Couldn't find the given move: ${formattedInputs}.`);
+        return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
       }
 
       const formattedCharacterName = characterCode.toUpperCase();
