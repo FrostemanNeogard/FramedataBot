@@ -9,7 +9,7 @@ module.exports = (bot, reload) => {
   // Read all subfolders within /commands
   fs.readdirSync("./commands/").forEach((category) => {
     // Save all commands in current subfolder
-    let commands = getFiles(`./commands/${category}`, ".js");
+    let commands = getFiles(`./commands/${category}`, ".ts");
 
     // Loop each file in commands and save it (or delete if we're reloading)
     commands.forEach((file) => {
