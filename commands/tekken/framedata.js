@@ -30,10 +30,10 @@ module.exports = {
       console.log("Attempting to fetch data from:", rbnUrl);
 
       // Fetch RBNorway data
-      const { body } = await needle("get", rbnUrl);
+      const { body, statusCode } = await needle("get", rbnUrl);
 
       // Guard clause if fetch was unsuccessful
-      if (!body || body.statusCode !== 200) {
+      if (!body || statusCode !== 200) {
         console.error("Couldn't fetch data.");
         return msg.reply(
           "An error occurred when fetching data. Please try again later."
