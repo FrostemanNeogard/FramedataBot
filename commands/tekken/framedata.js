@@ -9,20 +9,27 @@ module.exports = {
   permissions: [],
   devCommand: false,
   run: async ({ client, msg, args }) => {
+    // Get formatted character code
     const characterCode = getCharacterCode(args[0]);
+
+    // Guard clause to check for non-existing characters
     if (!characterCode) {
       console.error(`Couldn't find character: ${args[0]}`);
       return msg.reply(`Couldn't find character: "${args[0]}".`);
     }
+
+    // Guard clause to check for missing notation
     if (args.length < 2) {
       console.error(`No notation given.`);
       return msg.reply("Please provide a move in tekken notation.");
     }
 
-    const rbnURL = getRbnUrl(characterCode);
-    console.log("Attempting to fetch data from:", rbnURL);
+    const rbnUrl = `https://rbnorway.org/${characterCode}-t7-frames/`;
+    console.log("Attempting to fetch data from:", rbnUrl);
 
-    needle.get(rbnURL, (err, res) => {
+    // Fetch rbnUrl
+    needle.get(rbnUrl, (err, res) => {
+      // Guard clause if fetch was unsuccessful
       if (err || res.statusCode !== 200) {
         console.error("Couldn't fetch data.");
         return msg.reply(
@@ -30,37 +37,49 @@ module.exports = {
         );
       }
 
+      // RBNorway body
       const $ = cheerio.load(res.body, { decodeEntities: false });
 
+      // All args after the character name get stored as the unformatted inputs
       const unformattedInputs = args.slice(1).join("");
 
-      let matchedInput = checkForInput($, unformattedInputs);
-      if (matchedInput.length < 1) {
-        matchedInput = checkForInput($, unformattedInputs, true);
+      // Attempt to find a matching input from RBNorway
+      let matchedInputTr = checkForInput($, unformattedInputs);
+
+      // If not matching input was found, look again with additional leniency
+      if (matchedInputTr.length < 1) {
+        matchedInputTr = checkForInput($, unformattedInputs, true);
       }
 
-      const attackInfo = {
-        input: matchedInput.find("td:eq(0)").text(),
-        hitLevel: matchedInput.find("td:eq(1)").text(),
-        damage: matchedInput.find("td:eq(2)").text(),
-        startup: matchedInput.find("td:eq(3)").text(),
-        block: matchedInput.find("td:eq(4)").text(),
-        hit: matchedInput.find("td:eq(5)").text(),
-        counter: matchedInput.find("td:eq(6)").text(),
-        notes: matchedInput.find("td:eq(7)").text(),
-      };
-
-      if (matchedInput.length < 1) {
+      // Guard clause to check if a matched input was found
+      if (matchedInputTr.length < 1) {
         console.error("Couldn't find the given move.");
         return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
       }
 
+      // Store all attack data
+      const attackInfo = {
+        input: matchedInputTr.find("td:eq(0)").text(),
+        hitLevel: matchedInputTr.find("td:eq(1)").text(),
+        damage: matchedInputTr.find("td:eq(2)").text(),
+        startup: matchedInputTr.find("td:eq(3)").text(),
+        block: matchedInputTr.find("td:eq(4)").text(),
+        hit: matchedInputTr.find("td:eq(5)").text(),
+        counter: matchedInputTr.find("td:eq(6)").text(),
+        notes: matchedInputTr.find("td:eq(7)").text(),
+      };
+
+      // Create response embed
       const formattedCharacterName = characterCode.toUpperCase();
       const responseEmbed = new MessageEmbed()
         .setColor(0x00ff00)
         .setTitle(formattedCharacterName)
-        .setURL(rbnURL)
+        .setURL(rbnUrl)
         .setDescription(`Move: ${attackInfo.input}`);
+
+      responseEmbed.setFooter({
+        text: `Please report any issues to "${process.env.OWNER_NAME}" on discord.`,
+      });
 
       const fields = [
         { name: "Hit Level", value: attackInfo.hitLevel, inline: true },
@@ -72,22 +91,21 @@ module.exports = {
         { name: "Notes", value: attackInfo.notes },
       ];
 
+      // Remove any fields with no value
       fields.forEach((field) => {
         if (field.value !== undefined && field.value !== "") {
           responseEmbed.addField(field.name, field.value, field.inline);
         }
       });
 
-      responseEmbed.setFooter({
-        text: `Please report any issues to "${process.env.OWNER_NAME}" on discord.`,
-      });
-
+      // Finally, respond with the generated embed
       console.log("Replying with: ", responseEmbed);
       return msg.reply({ embeds: [responseEmbed] });
     });
   },
 };
 
+// Function to format tekken notation to allow for easier parsing
 function formatNotation(inputNotation, removePlus) {
   let modifiedNotation = inputNotation;
   modifiedNotation = modifiedNotation.replace(/ *\([^)]*\) */g, "");
@@ -111,6 +129,7 @@ function formatNotation(inputNotation, removePlus) {
   return modifiedNotation;
 }
 
+// Check the given <tr> element for any <td> that match the given input
 function checkForInput($, unformattedInputs, removePlus = false) {
   const formattedInputs = formatNotation(unformattedInputs, removePlus);
   const attackRow = $("tr:has(td)")
@@ -121,9 +140,4 @@ function checkForInput($, unformattedInputs, removePlus = false) {
     })
     .first();
   return attackRow;
-}
-
-function getRbnUrl(characterCode) {
-  const baseURL = `https://rbnorway.org/${characterCode}-t7-frames/`;
-  return baseURL;
 }
