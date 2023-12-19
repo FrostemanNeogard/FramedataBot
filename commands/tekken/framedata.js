@@ -1,7 +1,7 @@
 const cheerio = require("cheerio");
 const needle = require("needle");
 const { MessageEmbed } = require("discord.js");
-const getCharacterCode = require("./config");
+const getCharacterCode = require("./config/config");
 
 module.exports = {
   name: "fd",
