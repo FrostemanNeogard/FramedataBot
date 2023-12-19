@@ -31,49 +31,6 @@ module.exports = {
 
       const $ = cheerio.load(res.body, { decodeEntities: false });
 
-      const inputFormattingMap = {
-        1: "lp",
-        2: "rp",
-        3: "lk",
-        4: "rk",
-        db: "1",
-        d: "2",
-        df: "3",
-        b: "4",
-        n: "5",
-        f: "6",
-        ub: "7",
-        u: "8",
-        uf: "9",
-
-        DB: "1'",
-        D: "2'",
-        DF: "3'",
-        B: "4'",
-        N: "5'",
-        F: "6'",
-        UB: "7'",
-        U: "8'",
-        UF: "9'",
-
-        "1+2": "p",
-        "3+4": "k",
-        "1+3": "l",
-        "2+4": "r",
-        "1+4": "lpk",
-        "2+3": "rpk",
-
-        "1+2+3": "wplk",
-        "1+3+4": "lpwk",
-        "2+3+4": "rpwk",
-        "1+2+4": "wprk",
-        "1+2+3+4": "a",
-      };
-      const reverseInputFormattingMap = {};
-      Object.keys(inputFormattingMap).forEach((key) => {
-        reverseInputFormattingMap[inputFormattingMap[key]] = key;
-      });
-
       const unformattedInputs = args.slice(1).join("");
 
       let matchedInput = checkForInput($, unformattedInputs);
