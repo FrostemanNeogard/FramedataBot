@@ -114,8 +114,16 @@ module.exports = {
 // Function to format tekken notation to allow for easier parsing
 function formatNotation(inputNotation, removePlus) {
   let modifiedNotation = inputNotation
-    .replace(/ *\([^)]*\) */g, "")
     .toLowerCase()
+    .replaceAll("cd", "f,n,d,df")
+    .replaceAll("debug", "b,db,d,df")
+    .replaceAll("gs", "f,n,b,db,d,df,f")
+    .replaceAll("wr", "f,f,f")
+    .replaceAll("qcf", "d,df,f")
+    .replaceAll("qcb", "d,db,b")
+    .replaceAll("hcf", "b,db,f,df,f")
+    .replaceAll("hcb", "f,df,d,db,d")
+    .replace(/ *\([^)]*\) */g, "")
     .split("or")
     .pop()
     .split("in rage")
