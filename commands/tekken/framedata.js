@@ -115,6 +115,8 @@ module.exports = {
 function formatNotation(inputNotation, removePlus) {
   let modifiedNotation = inputNotation
     .toLowerCase()
+
+    // TODO: This is kinda stupid, maybe move the input shortcuts to a different function
     .replaceAll("cd", "f,n,d,df")
     .replaceAll("debug", "b,db,d,df")
     .replaceAll("gs", "f,n,b,db,d,df,f")
