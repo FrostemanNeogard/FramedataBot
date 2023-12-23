@@ -80,7 +80,7 @@ module.exports = {
         .setURL(rbnUrl)
         .setDescription(`Move: ${attackInfo.input}`)
         .setFooter({
-          text: `Please report any issues to "${process.env.OWNER_NAME}" on discord.`,
+          text: `Please use the "!report" command to submit any feedback you have.`,
         });
 
       // Define fields for response embed
