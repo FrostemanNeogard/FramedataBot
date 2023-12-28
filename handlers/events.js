@@ -56,6 +56,11 @@ function InitEvents(bot) {
   const { client } = bot;
 
   client.on("ready", () => {
+    client.user.setPresence({
+      activities: [{ name: "!help" }],
+      status: "online",
+    });
+
     TriggerEventHandler(bot, "ready");
   });
 
