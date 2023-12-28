@@ -10,6 +10,12 @@ module.exports = {
   devCommand: false,
   run: async ({ client, msg, args }) => {
     try {
+      if (args.length < 2) {
+        return msg.reply(
+          'Please provide a character and an attack in proper notation. Use the "!help" command for more info.'
+        );
+      }
+
       // Get formatted character code
       const characterCode = getCharacterCode(args[0]);
 
