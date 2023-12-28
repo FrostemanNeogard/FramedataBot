@@ -31,6 +31,10 @@ module.exports = {
         return msg.reply("Please provide a move in tekken notation.");
       }
 
+      // React to message to confirm everything went well
+      const reactionEmoji = "✅";
+      msg.react(reactionEmoji);
+
       // Build RBNorway URL for character frames
       const rbnUrl = `https://rbnorway.org/${characterCode}-t7-frames/`;
       console.log("Attempting to fetch data from:", rbnUrl);
