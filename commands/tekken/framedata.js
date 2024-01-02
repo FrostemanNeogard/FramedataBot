@@ -32,8 +32,7 @@ module.exports = {
       }
 
       // React to message to confirm everything went well
-      const reactionEmoji = "✅";
-      msg.react(reactionEmoji);
+      msg.react("👀");
 
       // Build RBNorway URL for character frames
       const rbnUrl = `https://rbnorway.org/${characterCode}-t7-frames/`;
@@ -67,6 +66,7 @@ module.exports = {
       // Guard clause to check if a matched input was found
       if (matchedInputTr.length < 1) {
         console.error("Couldn't find the given move.");
+        msg.react("❌");
         return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
       }
 
@@ -113,6 +113,7 @@ module.exports = {
 
       // Finally, respond with the generated embed
       console.log("Replying with: ", responseEmbed);
+      msg.react("✅");
       return msg.reply({ embeds: [responseEmbed] });
     } catch (error) {
       console.error("An error occurred:", error.message);
