@@ -136,6 +136,7 @@ function formatNotation(inputNotation, removePlus) {
     .replaceAll("qcb", "d,db,b")
     .replaceAll("hcf", "b,db,f,df,f")
     .replaceAll("hcb", "f,df,d,db,d")
+    .replaceAll("sidestep", "ss")
     .replace(/ *\([^)]*\) */g, "")
     .split("or")
     .pop()
