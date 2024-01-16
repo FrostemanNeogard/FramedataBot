@@ -20,7 +20,9 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName("notation")
-        .setDescription("Attack notation")
+        .setDescription(
+          "Attack in Tekken notation. Example: Forward right punch = f+2."
+        )
         .setRequired(true)
     ),
   async execute(interaction) {
