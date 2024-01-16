@@ -1,13 +1,19 @@
-const { MessageEmbed } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "help",
   category: "info",
   permissions: [],
   devCommand: false,
-  run: async ({ client, msg, args }) => {
-    // Reply with "Pong!"
-    const responseEmbed = new MessageEmbed()
+  data: new SlashCommandBuilder()
+    .setName("help")
+    .setDescription("Get some help"),
+  async execute(interaction) {
+    const data = { msg: interaction };
+    await this.run(data);
+  },
+  run: async ({ msg }) => {
+    const responseEmbed = new EmbedBuilder()
       .setColor(0x00ff00)
       .setTitle("HELP")
       .setDescription(`Command information`)
