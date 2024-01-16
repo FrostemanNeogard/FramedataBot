@@ -145,7 +145,7 @@ module.exports = {
         .setURL(rbnUrl)
         .setDescription(`Move: ${attackInfo.input}`)
         .setFooter({
-          text: `Please use the "!report" command to submit any feedback you have.`,
+          text: `Please use the report command to submit any feedback you may have.`,
         });
 
       // Define fields for response embed
