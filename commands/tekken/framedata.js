@@ -35,9 +35,7 @@ module.exports = {
           interaction.options.getString("notation"),
         ],
       };
-      const embed = await this.run(data, true);
-      console.log("Sending reply...");
-      return interaction.editReply({ embeds: [embed] });
+      await this.run(data, true);
     } catch (error) {
       console.error("Something went wrong:", error);
       return interaction.editReply(
@@ -48,8 +46,10 @@ module.exports = {
   run: async ({ client, msg, args }, slashCommand = false) => {
     try {
       if (args.length < 2) {
-        return msg.reply(
-          'Please provide a character and an attack in proper notation. Use the "!help" command for more info.'
+        return respond(
+          msg,
+          'Please provide a character and an attack in proper notation. Use the "!help" command for more info.',
+          slashCommand
         );
       }
 
@@ -59,13 +59,21 @@ module.exports = {
       // Guard clause to check for non-existing characters
       if (!characterCode) {
         console.error(`Couldn't find character: ${args[0]}`);
-        return msg.reply(`Couldn't find character: "${args[0]}".`);
+        return respond(
+          msg,
+          `Couldn't find character: "${args[0]}".`,
+          slashCommand
+        );
       }
 
       // Guard clause to check for missing notation
       if (args.length < 2) {
         console.error(`No notation given.`);
-        return msg.reply("Please provide a move in tekken notation.");
+        return respond(
+          msg,
+          "Please provide a move in tekken notation.",
+          slashCommand
+        );
       }
 
       // React to message to confirm everything went well
@@ -83,8 +91,10 @@ module.exports = {
       // Guard clause if fetch was unsuccessful
       if (!body || statusCode !== 200) {
         console.error("Couldn't fetch data.");
-        return msg.reply(
-          "An error occurred when fetching data. Please try again later."
+        return respond(
+          msg,
+          "An error occurred when fetching data. Please try again later.",
+          slashCommand
         );
       }
 
@@ -108,7 +118,11 @@ module.exports = {
         if (!slashCommand) {
           msg.react("❌");
         }
-        return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
+        return respond(
+          msg,
+          `Couldn't find the given move: ${unformattedInputs}.`,
+          slashCommand
+        );
       }
 
       // Store all attack data
@@ -159,16 +173,24 @@ module.exports = {
       // Finally, respond with the generated embed
       if (!slashCommand) {
         msg.react("✅");
-        msg.reply({ embeds: [responseEmbed] });
-        return;
       }
-      return responseEmbed;
+      respond(msg, { embeds: [responseEmbed] }, slashCommand);
+      return;
     } catch (error) {
       console.error("An error occurred:", error.message);
-      return msg.reply("An error occurred. Please try again later.");
+      return respond(
+        msg,
+        "An error occurred. Please try again later.",
+        slashCommand
+      );
     }
   },
 };
+
+function respond(msg, reply, slashCommand) {
+  if (slashCommand == true) return msg.editReply(reply);
+  else return msg.reply(reply);
+}
 
 // Function to format tekken notation to allow for easier parsing
 function formatNotation(inputNotation, removePlus) {
