@@ -10,7 +10,7 @@ module.exports = {
   devCommand: false,
   data: new SlashCommandBuilder()
     .setName("fd")
-    .setDescription("Descriptuitonton")
+    .setDescription("Look up framedata for a given tekken move.")
     .addStringOption((option) =>
       option
         .setName("character")
