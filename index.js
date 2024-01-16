@@ -1,13 +1,17 @@
 // Set up the login token as well as the command prefix and owner ID
 require("dotenv").config();
+const { Client, GatewayIntentBits } = require("discord.js");
+const { owner_id, prefix } = require("./config.json");
 const TOKEN = process.env.TOKEN;
-const prefix = process.env.PREFIX;
-const OWNERID = process.env.OWNERID;
 
 // Set up discord client (with intents due to API changes)
 const Discord = require("discord.js");
-const client = new Discord.Client({
-  intents: ["GUILDS", "GUILD_MESSAGES"],
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
 });
 
 // Create bot object
@@ -15,7 +19,7 @@ const client = new Discord.Client({
 let bot = {
   client,
   prefix: prefix,
-  owner: OWNERID,
+  owner: owner_id,
 };
 
 // Collections for commands and events
