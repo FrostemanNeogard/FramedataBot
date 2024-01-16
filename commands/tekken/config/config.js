@@ -62,22 +62,51 @@ module.exports = function getCharacterCode(character) {
 
   const characterMap = {
     ...createAliasMap(["akuma", "gouki", "aku"], characterCodes.akuma),
-    ...createAliasMap(["alisa", "alis", "als"], characterCodes.alisa),
-    ...createAliasMap(["anna", "ann"], characterCodes.anna),
     ...createAliasMap(
-      ["armorking", "armor-king", "armor_king", "ak", "amk"],
+      ["alisa", "alis", "als", "alisa bosconovitch", "bosconovitch"],
+      characterCodes.alisa
+    ),
+    ...createAliasMap(
+      ["anna", "ann", "anna williams", "williams2", "williams 2"],
+      characterCodes.anna
+    ),
+    ...createAliasMap(
+      ["armorking", "armor-king", "armor_king", "ak", "amk", "armor king"],
       characterCodes.armor_king
     ),
-    ...createAliasMap(["asuka"], characterCodes.asuka),
-    ...createAliasMap(["bob"], characterCodes.bob),
-    ...createAliasMap(["bryan", "bry", "brain", "brian"], characterCodes.bryan),
-    ...createAliasMap(["claudio", "cla"], characterCodes.claudio),
+    ...createAliasMap(["asuka", "asuka kazama"], characterCodes.asuka),
     ...createAliasMap(
-      ["devil-jin", "devil_jin", "deviljin", "devil", "dj"],
+      ["bob", "richards", "bob richards", "robert"],
+      characterCodes.bob
+    ),
+    ...createAliasMap(
+      ["bryan", "bry", "brain", "brian", "fury", "bryan fury"],
+      characterCodes.bryan
+    ),
+    ...createAliasMap(
+      ["claudio", "cla", "serafino", "claudio serafino"],
+      characterCodes.claudio
+    ),
+    ...createAliasMap(
+      [
+        "devil-jin",
+        "devil_jin",
+        "deviljin",
+        "devil",
+        "dj",
+        "devil jin",
+        "d jin",
+      ],
       characterCodes.devil_jin
     ),
-    ...createAliasMap(["dragunov", "drag", "dra"], characterCodes.dragunov),
-    ...createAliasMap(["eddy", "eddie", "edy", "edd"], characterCodes.eddy),
+    ...createAliasMap(
+      ["dragunov", "drag", "dra", "sergei", "sergei dragunov"],
+      characterCodes.dragunov
+    ),
+    ...createAliasMap(
+      ["eddy", "eddie", "edy", "edd", "eddy gordo"],
+      characterCodes.eddy
+    ),
     ...createAliasMap(
       ["eliza", "liz", "elisa", "liza", "elz"],
       characterCodes.eliza
@@ -86,54 +115,146 @@ module.exports = function getCharacterCode(character) {
       ["fahkumram", "fahk", "fak", "fhk"],
       characterCodes.fahkumram
     ),
-    ...createAliasMap(["feng", "fng"], characterCodes.feng),
+    ...createAliasMap(["feng", "fng", "wei", "feng wei"], characterCodes.feng),
     ...createAliasMap(["ganryu", "gan", "gry"], characterCodes.ganryu),
-    ...createAliasMap(["geese", "howard"], characterCodes.geese),
+    ...createAliasMap(
+      ["geese", "howard", "geese howard"],
+      characterCodes.geese
+    ),
     ...createAliasMap(["gigas", "gigass"], characterCodes.gigas),
-    ...createAliasMap(["heihachi", "hei"], characterCodes.heihachi),
+    ...createAliasMap(
+      ["heihachi", "hei", "hei mishima", "heihachi mishima"],
+      characterCodes.heihachi
+    ),
     ...createAliasMap(["hwoarang", "hwo"], characterCodes.hwoarang),
     ...createAliasMap(
-      ["jack", "jack7", "jack_7", "jack-7"],
+      ["jack", "jack7", "jack_7", "jack-7", "jack 7"],
       characterCodes.jack_7
     ),
-    ...createAliasMap(["jin"], characterCodes.jin),
-    ...createAliasMap(["josie", "crybaby"], characterCodes.josie),
-    ...createAliasMap(["julia", "chang", "jul"], characterCodes.julia),
-    ...createAliasMap(["katarina", "kat"], characterCodes.katarina),
-    ...createAliasMap(["kazumi", "kzm"], characterCodes.kazumi),
-    ...createAliasMap(["kazuya", "kaz"], characterCodes.kazuya),
+    ...createAliasMap(["jin", "jin kazama"], characterCodes.jin),
+    ...createAliasMap(
+      ["josie", "crybaby", "josie rizal", "rizal"],
+      characterCodes.josie
+    ),
+    ...createAliasMap(
+      ["julia", "chang", "jul", "julia chang"],
+      characterCodes.julia
+    ),
+    ...createAliasMap(
+      ["katarina", "kat", "alvez", "katarina alvez", "kat alvez"],
+      characterCodes.katarina
+    ),
+    ...createAliasMap(
+      ["kazumi", "kzm", "kazumi mishima"],
+      characterCodes.kazumi
+    ),
+    ...createAliasMap(
+      ["kazuya", "kaz", "kaz mishima", "kazuya mishima"],
+      characterCodes.kazuya
+    ),
     ...createAliasMap(["king"], characterCodes.king),
     ...createAliasMap(["kuma", "panda", "bear", "bears"], characterCodes.kuma),
     ...createAliasMap(["kunimitsu", "kuni"], characterCodes.kunimitsu),
-    ...createAliasMap(["lars"], characterCodes.lars),
-    ...createAliasMap(["law", "bruce_lee", "bruce-lee"], characterCodes.law),
-    ...createAliasMap(["lee", "flower"], characterCodes.lee),
     ...createAliasMap(
-      ["lei", "jackie_chan", "jackie-chan"],
+      ["lars", "alexandersson", "lars alexandersson"],
+      characterCodes.lars
+    ),
+    ...createAliasMap(
+      ["law", "bruce_lee", "bruce-lee", "marshall", "marshall law"],
+      characterCodes.law
+    ),
+    ...createAliasMap(
+      [
+        "lee",
+        "flower",
+        "chaolan",
+        "lee chaolan",
+        "chaobla",
+        "top 4",
+        "lei chaobla",
+      ],
+      characterCodes.lee
+    ),
+    ...createAliasMap(
+      ["lei", "jackie_chan", "jackie-chan", "wulong", "lei wulong"],
       characterCodes.lei
     ),
-    ...createAliasMap(["leo"], characterCodes.leo),
-    ...createAliasMap(["leroy"], characterCodes.leroy),
-    ...createAliasMap(["lidia"], characterCodes.lidia),
-    ...createAliasMap(["lili"], characterCodes.lili),
+    ...createAliasMap(["leo", "kliesen", "leo kliesen"], characterCodes.leo),
+    ...createAliasMap(["leroy", "leroy smith"], characterCodes.leroy),
     ...createAliasMap(
-      ["luckychloe", "lucky-chloe", "lucky_chloe", "chloe", "lucky", "idol"],
+      ["lidia", "sobieska", "lidia sobieska"],
+      characterCodes.lidia
+    ),
+    ...createAliasMap(
+      ["lili", "rochefort", "lili de rochefort", "lili rochefort"],
+      characterCodes.lili
+    ),
+    ...createAliasMap(
+      [
+        "luckychloe",
+        "lucky-chloe",
+        "lucky_chloe",
+        "chloe",
+        "lucky",
+        "idol",
+        "lucky chole",
+        "l chloe",
+      ],
       characterCodes.lucky_chloe
     ),
-    ...createAliasMap(["marduk", "duk", "craig"], characterCodes.marduk),
     ...createAliasMap(
-      ["masterraven", "master-raven", "maven", "raven"],
+      ["marduk", "duk", "craig", "craig marduk"],
+      characterCodes.marduk
+    ),
+    ...createAliasMap(
+      ["masterraven", "master-raven", "maven", "raven", "master raven"],
       characterCodes.master_raven
     ),
-    ...createAliasMap(["miguel", "mig"], characterCodes.miguel),
-    ...createAliasMap(["negan"], characterCodes.negan),
-    ...createAliasMap(["nina"], characterCodes.nina),
-    ...createAliasMap(["noctis"], characterCodes.noctis),
-    ...createAliasMap(["paul"], characterCodes.paul),
-    ...createAliasMap(["shaheen"], characterCodes.shaheen),
-    ...createAliasMap(["steve", "boxer"], characterCodes.steve),
-    ...createAliasMap(["xioayu", "ling", "x"], characterCodes.xiaoyu),
-    ...createAliasMap(["yoshi", "yosh", "yos"], characterCodes.yoshimitsu),
+    ...createAliasMap(
+      [
+        "miguel",
+        "mig",
+        "caballero",
+        "rojo",
+        "miguel caballero",
+        "miguel caballero rojo",
+        "caballero rojo",
+      ],
+      characterCodes.miguel
+    ),
+    ...createAliasMap(["negan", "negan smith"], characterCodes.negan),
+    ...createAliasMap(
+      ["nina", "nina williams", "williams1", "williams 1"],
+      characterCodes.nina
+    ),
+    ...createAliasMap(
+      [
+        "noctis",
+        "lucis",
+        "caelum",
+        "lucis caelum",
+        "noctis caelum",
+        "noctis lucis",
+        "noctis lucis caelum",
+        "calcium",
+        "noctis calcium",
+      ],
+      characterCodes.noctis
+    ),
+    ...createAliasMap(["paul", "phoenix", "paul phoenix"], characterCodes.paul),
+    ...createAliasMap(["shaheen", "sha"], characterCodes.shaheen),
+    ...createAliasMap(
+      ["steve", "boxer", "steve fox", "fox"],
+      characterCodes.steve
+    ),
+    ...createAliasMap(
+      ["xioayu", "ling", "x", "ling xiaoyu"],
+      characterCodes.xiaoyu
+    ),
+    ...createAliasMap(
+      ["yoshi", "yosh", "yos", "yoshimitsu"],
+      characterCodes.yoshimitsu
+    ),
     ...createAliasMap(["zafina", "zaf"], characterCodes.zafina),
   };
 
