@@ -1,6 +1,6 @@
 const cheerio = require("cheerio");
 const needle = require("needle");
-const { MessageEmbed } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const getCharacterCode = require("./config/config");
 
 module.exports = {
@@ -8,7 +8,42 @@ module.exports = {
   category: "tekken",
   permissions: [],
   devCommand: false,
-  run: async ({ client, msg, args }) => {
+  data: new SlashCommandBuilder()
+    .setName("fd")
+    .setDescription("Descriptuitonton")
+    .addStringOption((option) =>
+      option
+        .setName("character")
+        .setDescription("Character name")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("notation")
+        .setDescription("Attack notation")
+        .setRequired(true)
+    ),
+  async execute(interaction) {
+    await interaction.deferReply();
+    try {
+      const data = {
+        msg: interaction,
+        args: [
+          interaction.options.getString("character"),
+          interaction.options.getString("notation"),
+        ],
+      };
+      const embed = await this.run(data, true);
+      console.log("Sending reply...");
+      return interaction.editReply({ embeds: [embed] });
+    } catch (error) {
+      console.error("Something went wrong:", error);
+      return interaction.editReply(
+        "An error occurred. Please try again later."
+      );
+    }
+  },
+  run: async ({ client, msg, args }, slashCommand = false) => {
     try {
       if (args.length < 2) {
         return msg.reply(
@@ -32,7 +67,9 @@ module.exports = {
       }
 
       // React to message to confirm everything went well
-      msg.react("👀");
+      if (!slashCommand) {
+        msg.react("👀");
+      }
 
       // Build RBNorway URL for character frames
       const rbnUrl = `https://rbnorway.org/${characterCode}-t7-frames/`;
@@ -66,7 +103,9 @@ module.exports = {
       // Guard clause to check if a matched input was found
       if (matchedInputTr.length < 1) {
         console.error("Couldn't find the given move.");
-        msg.react("❌");
+        if (!slashCommand) {
+          msg.react("❌");
+        }
         return msg.reply(`Couldn't find the given move: ${unformattedInputs}.`);
       }
 
@@ -84,7 +123,7 @@ module.exports = {
 
       // Create response embed
       const formattedCharacterName = characterCode.toUpperCase();
-      const responseEmbed = new MessageEmbed()
+      const responseEmbed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(formattedCharacterName)
         .setURL(rbnUrl)
@@ -104,17 +143,24 @@ module.exports = {
         { name: "Notes", value: attackInfo.notes },
       ];
 
-      // Remove any fields with no value
+      // Remove any fields with no value and add the remaining ones
       fields.forEach((field) => {
         if (field.value !== undefined && field.value !== "") {
-          responseEmbed.addField(field.name, field.value, field.inline);
+          responseEmbed.addFields({
+            name: field.name,
+            value: field.value,
+            inline: field.inline,
+          });
         }
       });
 
       // Finally, respond with the generated embed
-      console.log("Replying with: ", responseEmbed);
-      msg.react("✅");
-      return msg.reply({ embeds: [responseEmbed] });
+      if (!slashCommand) {
+        msg.react("✅");
+        msg.reply({ embeds: [responseEmbed] });
+        return;
+      }
+      return responseEmbed;
     } catch (error) {
       console.error("An error occurred:", error.message);
       return msg.reply("An error occurred. Please try again later.");
@@ -136,7 +182,6 @@ function formatNotation(inputNotation, removePlus) {
     .replaceAll("qcb", "d,db,b")
     .replaceAll("hcf", "b,db,f,df,f")
     .replaceAll("hcb", "f,df,d,db,d")
-    .replaceAll("sidestep", "ss")
     .replace(/ *\([^)]*\) */g, "")
     .split("or")
     .pop()
