@@ -37,26 +37,18 @@ const rest = new REST().setToken(TOKEN);
 // and deploy your commands!
 (async () => {
   try {
-    const response = await rest.put(
-      Routes.applicationGuildCommands(CLIENT_ID, "1103056406313189439"),
-      {
-        body: [],
-      }
-    );
-    console.log("Successfully deleted all application commands.");
-
+    await rest.put(Routes.applicationCommands(CLIENT_ID), {
+      body: [],
+    });
     console.log(
       `Started refreshing ${commands.length} application (/) commands.`
     );
 
     // The put method is used to fully refresh all commands in the guild with the current set
     console.log("Commands:", commands);
-    const data = await rest.put(
-      Routes.applicationGuildCommands(CLIENT_ID, "1103056406313189439"),
-      {
-        body: commands,
-      }
-    );
+    const data = await rest.put(Routes.applicationCommands(CLIENT_ID), {
+      body: commands,
+    });
 
     console.log(
       `Successfully reloaded ${data.length} application (/) commands.`
