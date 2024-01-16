@@ -1,4 +1,5 @@
 // Import getFiles function
+const { Events } = require("discord.js");
 const { getFiles } = require("../util/functions");
 
 module.exports = (bot, reload) => {
@@ -56,15 +57,14 @@ function InitEvents(bot) {
   const { client } = bot;
 
   client.on("ready", () => {
-    client.user.setPresence({
-      activities: [{ name: "!help" }],
-      status: "online",
-    });
-
-    TriggerEventHandler(bot, "ready");
+    TriggerEventHandler(bot, Events.ClientReady);
   });
 
-  client.on("messageCreate", (msg) => {
-    TriggerEventHandler(bot, "messageCreate", msg);
+  client.on(Events.MessageCreate, async (msg) => {
+    TriggerEventHandler(bot, Events.MessageCreate, msg);
+  });
+
+  client.on(Events.InteractionCreate, async (interaction) => {
+    TriggerEventHandler(bot, Events.InteractionCreate, interaction);
   });
 }
