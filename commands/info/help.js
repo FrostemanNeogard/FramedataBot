@@ -9,8 +9,33 @@ module.exports = {
     .setName("help")
     .setDescription("Get some help"),
   async execute(interaction) {
-    const data = { msg: interaction };
-    await this.run(data);
+    const responseEmbed = new EmbedBuilder()
+      .setColor(0x00ff00)
+      .setTitle("HELP")
+      .setDescription(`Command information`)
+      .setFields([
+        {
+          name: "/fd {characterName} {attackNotation}",
+          value:
+            "Responds with frame data for the given attack. (Tekken 8 data will be added as soon as possible)",
+        },
+        {
+          name: "/report {message}",
+          value: "Send feedback about this bot.",
+        },
+        {
+          name: "/help",
+          value: "Replies with information for all commands.",
+        },
+        {
+          name: "/ping",
+          value: "Responds with 'Pong!'",
+        },
+      ])
+      .setFooter({
+        text: `NOTE: These commands are all available as ! commands as well.`,
+      });
+    return interaction.reply({ embeds: [responseEmbed] });
   },
   run: async ({ msg }) => {
     const responseEmbed = new EmbedBuilder()
@@ -37,7 +62,7 @@ module.exports = {
         },
       ])
       .setFooter({
-        text: `Please use the "!report" command to submit any feedback you have.`,
+        text: `NOTE: These commands are all available as slash commands as well.`,
       });
     return msg.reply({ embeds: [responseEmbed] });
   },
