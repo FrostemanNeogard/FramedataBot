@@ -96,6 +96,7 @@ module.exports = function getCharacterCode(character) {
         "dj",
         "devil jin",
         "d jin",
+        "dvj",
       ],
       characterCodes.devil_jin
     ),
