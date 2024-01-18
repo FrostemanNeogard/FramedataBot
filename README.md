@@ -11,9 +11,7 @@ All information is fetched from [RBNorway](https://rbnorway.org/t7-frame-data/) 
 
 # Commands
 
-Note that all these commands are available as both slash commands (/) and regular prefix commands (!).
-
-This is due to me personally preferring the speed of simply being able to type "!fd bryan df2" instead of using Discord's slash command functionality.
+Note that all these commands are available as both slash commands (/) and regular prefix commands (!). This is due to me personally preferring the speed of simply being able to type "!fd bryan df2" instead of using Discord's slash command functionality.
 
 ## Framedata
 
