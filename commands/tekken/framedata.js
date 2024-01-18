@@ -106,12 +106,13 @@ module.exports = {
       // All args after the character name get stored as the unformatted inputs
       const unformattedInputs = args.slice(1).join("");
 
-      // Attempt to find a matching input from RBNorway
-      let matchedInputTr = checkForInput($, unformattedInputs);
-
-      // If no matching input was found, look again with additional leniency
-      if (matchedInputTr.length < 1) {
-        matchedInputTr = checkForInput($, unformattedInputs, true);
+      let matchedInputTr;
+      for (let i = 0; i < 2; i++) {
+        let doRemovePlus = i > 0;
+        matchedInputTr = checkForInput($, unformattedInputs, doRemovePlus);
+        if (matchedInputTr.length >= 1) {
+          break;
+        }
       }
 
       // Guard clause to check if a matched input was found
@@ -122,7 +123,7 @@ module.exports = {
         }
         return respond(
           msg,
-          `Couldn't find the given move: ${unformattedInputs}.`,
+          `Couldn't find the given move: ${args.slice(1)}.`,
           slashCommand
         );
       }
@@ -209,15 +210,15 @@ function formatNotation(inputNotation, removePlus) {
     .replaceAll("qcb", "d,db,b")
     .replaceAll("hcf", "b,db,f,df,f")
     .replaceAll("hcb", "f,df,d,db,d")
-    .replace(/ *\([^)]*\) */g, "")
+    .replaceAll(/ *\([^)]*\) */g, "")
     .split("or")
     .pop()
     .split("in rage")
     .pop()
-    .replace(/[\s,+/()]/g, "");
+    .replace(/[\s,/()]/g, "");
 
   if (removePlus) {
-    modifiedNotation = modifiedNotation.replace(/\+/g, "");
+    modifiedNotation = modifiedNotation.replaceAll(/\+/g, "");
   }
 
   return modifiedNotation;
@@ -228,7 +229,7 @@ function checkForInput($, unformattedInputs, removePlus = false) {
   const formattedInputs = formatNotation(unformattedInputs, removePlus);
   const attackRow = $("tr:has(td)")
     .filter((index, element) => {
-      const tdText = $(element).find("td").first().text().trim().toLowerCase();
+      const tdText = $(element).find("td").first().text().trim();
       return formatNotation(tdText, removePlus) == formattedInputs;
     })
     .first();
