@@ -3,7 +3,7 @@ module.exports = {
   run: async (bot) => {
     const { client } = bot;
     client.user.setPresence({
-      activities: [{ name: "!help" }],
+      activities: [{ name: "TEKKEN 9" }],
       status: "online",
     });
 
