@@ -15,6 +15,13 @@ module.exports = {
     }
 
     try {
+      // Log command use
+      let date = new Date().toLocaleString();
+      console.log(
+        `\nDate and time: ${date}` +
+          `\nCommand: "${command.name}" was run by "${interaction.user.username}" (${interaction.user.id}) in server: "${interaction.guild.name}" (${interaction.guild.id}) at channel: ${interaction.channelId}`
+      );
+
       await command.execute(interaction, client);
     } catch (error) {
       console.error(error);

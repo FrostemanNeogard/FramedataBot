@@ -32,7 +32,7 @@ module.exports = {
 
     try {
       // Log command use
-      let date = new Date("dd/mm/yyyy");
+      let date = new Date().toLocaleString();
       console.log(
         `\nDate and time: ${date}` +
           `\nCommand: "${command.name}" was run by "${msg.author.tag}" (${msg.author.id}) in server: "${msg.guild.name}" (${msg.guild.id}) at channel: "${msg.channel.name}" (${msg.channel.id})` +

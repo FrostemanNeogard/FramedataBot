@@ -188,6 +188,7 @@ module.exports = {
 };
 
 function respond(msg, reply, slashCommand) {
+  console.log("Reply sent!");
   if (slashCommand == true) return msg.editReply(reply);
   else return msg.reply(reply);
 }
