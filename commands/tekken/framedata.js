@@ -46,6 +46,7 @@ module.exports = {
   run: async ({ client, msg, args }, slashCommand = false) => {
     try {
       if (args.length < 2) {
+        console.log("Missing args.");
         return respond(
           msg,
           'Please provide a character and an attack in proper notation. Use the "!help" command for more info.',
@@ -59,6 +60,7 @@ module.exports = {
       // Guard clause to check for non-existing characters
       if (!characterCode) {
         console.error(`Couldn't find character: ${args[0]}`);
+        console.log("Couldn't find given character.");
         return respond(
           msg,
           `Couldn't find character: "${args[0]}".`,
