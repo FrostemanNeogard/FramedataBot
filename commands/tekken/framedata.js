@@ -49,7 +49,7 @@ module.exports = {
         console.log("Missing args.");
         return respond(
           msg,
-          'Please provide a character and an attack in proper notation. Use the "!help" command for more info.',
+          "Please provide a character and an attack in proper notation. Use the help command for more info.",
           slashCommand
         );
       }
