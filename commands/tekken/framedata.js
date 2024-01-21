@@ -181,11 +181,8 @@ module.exports = {
       return;
     } catch (error) {
       console.error("An error occurred:", error.message);
-      return respond(
-        msg,
-        "An error occurred. Please try again later.",
-        slashCommand
-      );
+      respond(msg, "An error occurred. Please try again later.", slashCommand);
+      return;
     }
   },
 };
