@@ -212,7 +212,7 @@ function formatNotation(inputNotation, removePlus) {
     .pop()
     .split("in rage")
     .pop()
-    .replace(/[\s,/()]/g, "");
+    .replace(/[\s,:/()]/g, "");
 
   if (removePlus) {
     modifiedNotation = modifiedNotation.replaceAll(/\+/g, "");
