@@ -117,7 +117,7 @@ module.exports = function getCharacterCode(character) {
       characterCodes.fahkumram
     ),
     ...createAliasMap(["feng", "fng", "wei", "feng wei"], characterCodes.feng),
-    ...createAliasMap(["ganryu", "gan", "gry"], characterCodes.ganryu),
+    ...createAliasMap(["ganryu", "gan", "gry", "ganny"], characterCodes.ganryu),
     ...createAliasMap(
       ["geese", "howard", "geese howard"],
       characterCodes.geese
