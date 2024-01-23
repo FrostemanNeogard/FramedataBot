@@ -15,9 +15,12 @@ module.exports = {
       .setDescription(`Command information`)
       .setFields([
         {
-          name: "/fd {characterName} {attackNotation}",
-          value:
-            "Responds with frame data for the given attack. (Tekken 8 data will be added as soon as possible)",
+          name: "/fd7 {characterName} {attackNotation}",
+          value: "Responds with frame data for the given attack. (Tekken 7)",
+        },
+        {
+          name: "/fd8 {characterName} {attackNotation}",
+          value: "Responds with frame data for the given attack. (Tekken 8)",
         },
         {
           name: "/report {message}",
@@ -44,9 +47,12 @@ module.exports = {
       .setDescription(`Command information`)
       .setFields([
         {
-          name: "!fd {characterName} {attackNotation}",
-          value:
-            "Responds with frame data for the given attack. (Tekken 8 data will be added as soon as possible)",
+          name: "!fd7 {characterName} {attackNotation}",
+          value: "Responds with frame data for the given attack. (Tekken 7)",
+        },
+        {
+          name: "!fd8 {characterName} {attackNotation}",
+          value: "Responds with frame data for the given attack. (Tekken 8)",
         },
         {
           name: "!report {message}",
