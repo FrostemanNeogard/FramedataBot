@@ -62,7 +62,7 @@ module.exports = {
       const unformattedInputs = args.slice(1).join("");
       const fetch = (await import("node-fetch")).default;
       const characterCodeResponse = await fetch(
-        `http://localhost:3000/character-code/${args[0]}`
+        `http://localhost:3000/character-code/${args[0].toLowerCase()}`
       );
 
       if (characterCodeResponse.status === 400) {
