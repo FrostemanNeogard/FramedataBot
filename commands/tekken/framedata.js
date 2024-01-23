@@ -24,9 +24,9 @@ module.exports = {
     )
     .addStringOption((option) =>
       option
-        .setName("gamecode")
+        .setName("game")
         .setDescription(
-          "(OPTINAL) Select which game to search for. Defaults to Tekken 8."
+          "(OPTINAL) Select which game to search for. Defaults to Tekken 7."
         )
         .setRequired(false)
         .addChoices(
@@ -43,7 +43,7 @@ module.exports = {
           interaction.options.getString("character"),
           interaction.options.getString("notation"),
         ],
-        gameCode: interaction.options.getString("gamecode"),
+        gameCode: interaction.options.getString("game"),
       };
       await this.run(data, true, data.gameCode || "tekken7");
     } catch (error) {
