@@ -45,7 +45,7 @@ module.exports = {
         ],
         gameCode: interaction.options.getString("gamecode"),
       };
-      await this.run(data, true, data.gameCode || "tekken8");
+      await this.run(data, true, data.gameCode || "tekken7");
     } catch (error) {
       console.error("Something went wrong:", error);
       return interaction.editReply(
@@ -56,7 +56,7 @@ module.exports = {
   run: async (
     { client, msg, args },
     slashCommand = false,
-    gameCode = "tekken8"
+    gameCode = "tekken7"
   ) => {
     try {
       if (args.length < 2) {
