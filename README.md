@@ -13,13 +13,21 @@ All information is fetched from [RBNorway](https://rbnorway.org/t7-frame-data/) 
 
 Note that all these commands are available as both slash commands (/) and regular prefix commands (!). This is due to me personally preferring the speed of simply being able to type "!fd bryan df2" instead of using Discord's slash command functionality.
 
-## Framedata
+## Framedata (Tekken 8)
 
-Syntax: `/fd {character_name} {attack_input_notation}`
+Syntax: `/fd8 {character_name} {attack_input_notation}`
 
-Example: `/fd bryan df23`
+Example: `/fd8 reina df2`
 
-Replies with a Discord embed containing data for the given move.
+Replies with a Discord embed containing data for the given move (Tekken 8).
+
+## Framedata (Tekken 7)
+
+Syntax: `/fd7 {character_name} {attack_input_notation}`
+
+Example: `/fd7 bryan df23`
+
+Replies with a Discord embed containing data for the given move (Tekken 7).
 
 ## Ping
 
