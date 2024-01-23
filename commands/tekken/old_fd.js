@@ -7,7 +7,9 @@ module.exports = {
   devCommand: false,
   data: new SlashCommandBuilder()
     .setName("fd")
-    .setDescription("Look up framedata for a given tekken move."),
+    .setDescription(
+      "(DEPRACATED) Responds with information about new commands."
+    ),
   async execute(interaction) {
     await interaction.reply(
       `This command has been depracated. Please use the new "fd7" or "fd8" commands for Tekken 7 and Tekken 8 respectively.`
