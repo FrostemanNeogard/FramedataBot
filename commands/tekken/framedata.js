@@ -21,6 +21,18 @@ module.exports = {
           "Attack in Tekken notation. Example: Forward right punch = f+2."
         )
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("gamecode")
+        .setDescription(
+          "(OPTINAL) Select which game to search for. Defaults to Tekken 8."
+        )
+        .setRequired(false)
+        .addChoices(
+          { name: "Tekken 7", value: "tekken7" },
+          { name: "Tekken 8", value: "tekken8" }
+        )
     ),
   async execute(interaction) {
     await interaction.deferReply();
@@ -31,8 +43,9 @@ module.exports = {
           interaction.options.getString("character"),
           interaction.options.getString("notation"),
         ],
+        gameCode: interaction.options.getString("gamecode"),
       };
-      await this.run(data, true);
+      await this.run(data, true, data.gameCode || "tekken8");
     } catch (error) {
       console.error("Something went wrong:", error);
       return interaction.editReply(
@@ -40,7 +53,11 @@ module.exports = {
       );
     }
   },
-  run: async ({ client, msg, args }, slashCommand = false) => {
+  run: async (
+    { client, msg, args },
+    slashCommand = false,
+    gameCode = "tekken8"
+  ) => {
     try {
       if (args.length < 2) {
         console.error(`Missing args.`);
@@ -74,16 +91,15 @@ module.exports = {
 
       const characterCodeData = await characterCodeResponse.json();
       const characterCode = characterCodeData.characterCode;
-      const frameDataResponse = await fetch(
-        `http://localhost:3000/tekken7/${characterCode}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            input: unformattedInputs,
-          }),
-        }
-      );
+      const frameDataResponse = await fetch(`http://localhost:3000/framedata`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          characterCode: characterCode,
+          gameCode: gameCode,
+          input: unformattedInputs,
+        }),
+      });
       const frameData = await frameDataResponse.json();
 
       if (frameData.status === 400) {
