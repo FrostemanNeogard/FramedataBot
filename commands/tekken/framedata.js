@@ -1,12 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  name: "fd",
+  name: "fd7",
   category: "tekken",
   permissions: [],
   devCommand: false,
   data: new SlashCommandBuilder()
-    .setName("fd")
+    .setName("fd7")
     .setDescription("Look up framedata for a given tekken move.")
     .addStringOption((option) =>
       option
@@ -21,18 +21,6 @@ module.exports = {
           "Attack in Tekken notation. Example: Forward right punch = f+2."
         )
         .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("game")
-        .setDescription(
-          "(OPTINAL) Select which game to search for. Defaults to Tekken 7."
-        )
-        .setRequired(false)
-        .addChoices(
-          { name: "Tekken 7", value: "tekken7" },
-          { name: "Tekken 8", value: "tekken8" }
-        )
     ),
   async execute(interaction) {
     await interaction.deferReply();
