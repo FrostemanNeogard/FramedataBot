@@ -1,4 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  AttachmentBuilder,
+} = require("discord.js");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
   name: "fd7",
@@ -65,19 +71,20 @@ module.exports = {
         `http://localhost:3000/character-code/${args[0].toLowerCase()}`
       );
 
+      const characterCodeData = await characterCodeResponse.json();
+
       if (characterCodeResponse.status === 400) {
-        console.error("Couldn't find the given character.");
+        const errorMessage = characterCodeResponse.message.replaceAll(
+          "BadRequestException: ",
+          ""
+        );
+        console.error(`Error: ${errorMessage}`);
         if (!slashCommand) {
           msg.react("❌");
         }
-        return respond(
-          msg,
-          `Couldn't find the given character: ${args[0]}.`,
-          slashCommand
-        );
+        return respond(msg, `Error: ${errorMessage}`, slashCommand);
       }
 
-      const characterCodeData = await characterCodeResponse.json();
       const characterCode = characterCodeData.characterCode;
       const frameDataResponse = await fetch(`http://localhost:3000/framedata`, {
         method: "POST",
@@ -91,24 +98,30 @@ module.exports = {
       const frameData = await frameDataResponse.json();
 
       if (frameData.status === 400) {
-        console.error("Couldn't find the given move.");
+        const errorMessage = frameData.message.replaceAll(
+          "BadRequestException: ",
+          ""
+        );
+        console.error(`Error: ${errorMessage}`);
         if (!slashCommand) {
           msg.react("❌");
         }
-        return respond(
-          msg,
-          `Couldn't find the given move: ${args.slice(1)}.`,
-          slashCommand
-        );
+        return respond(msg, `Error: ${errorMessage}`, slashCommand);
       }
 
       const { input, hit_level, damage, startup, block, hit, counter, note } =
         frameData;
 
+      const imageFile = new AttachmentBuilder(
+        path.join(__dirname, `./images/${characterCode}.png`),
+        { name: `${characterCode}.png` }
+      );
+
       const responseEmbed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(characterCode.toUpperCase())
         .setDescription(`Move: ${input}`)
+        .setThumbnail(encodeURI(`attachment://${imageFile.name}`))
         .setFooter({
           text: `Please use the report command to submit any feedback you may have.`,
         });
@@ -137,7 +150,11 @@ module.exports = {
         msg.react("✅");
       }
 
-      respond(msg, { embeds: [responseEmbed] }, slashCommand);
+      respond(
+        msg,
+        { embeds: [responseEmbed], files: [imageFile] },
+        slashCommand
+      );
       return;
     } catch (error) {
       console.error("An error occurred:", error.message);
