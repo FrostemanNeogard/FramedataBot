@@ -3,6 +3,7 @@ const {
   EmbedBuilder,
   AttachmentBuilder,
 } = require("discord.js");
+const fs = require("fs");
 const path = require("path");
 
 module.exports = {
@@ -111,19 +112,28 @@ module.exports = {
       const { input, hit_level, damage, startup, block, hit, counter, note } =
         frameData;
 
-      const imageFile = new AttachmentBuilder(
-        path.join(__dirname, `./images/${characterCode}.png`),
-        { name: `${characterCode}.png` }
-      );
-
       const responseEmbed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(characterCode.toUpperCase())
         .setDescription(`Move: ${input}`)
-        .setThumbnail(encodeURI(`attachment://${imageFile.name}`))
+
         .setFooter({
           text: `Please use the report command to submit any feedback you may have.`,
         });
+
+      let imageFiles = [];
+      const imageFilePath = path.join(
+        __dirname,
+        `./images/${characterCode}.png`
+      );
+      const fileExists = fs.existsSync(imageFilePath);
+      if (fileExists) {
+        const imageFile = new AttachmentBuilder(imageFilePath, {
+          name: `${characterCode}.png`,
+        });
+        responseEmbed.setThumbnail(encodeURI(`attachment://${imageFile.name}`));
+        imageFiles.push(imageFile);
+      }
 
       const fields = [
         { name: "Hit Level", value: hit_level, inline: true },
@@ -151,7 +161,7 @@ module.exports = {
 
       respond(
         msg,
-        { embeds: [responseEmbed], files: [imageFile] },
+        { embeds: [responseEmbed], files: imageFiles },
         slashCommand
       );
       return;
