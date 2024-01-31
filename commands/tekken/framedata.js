@@ -73,8 +73,8 @@ module.exports = {
 
       const characterCodeData = await characterCodeResponse.json();
 
-      if (characterCodeResponse.status === 400) {
-        const errorMessage = characterCodeResponse.message.replaceAll(
+      if (characterCodeData.status === 400) {
+        const errorMessage = characterCodeData.message.replaceAll(
           "BadRequestException: ",
           ""
         );
