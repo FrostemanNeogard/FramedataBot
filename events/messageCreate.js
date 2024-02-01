@@ -5,15 +5,31 @@ module.exports = {
   run: async function RunAll(bot, msg) {
     // Deconstruct client, prefix, and owner from bot
     const { client, prefix, owner } = bot;
+    const clientId = client.application.id;
+    let isTag = false;
+    const tagString = `<@${clientId}>`;
 
     // Guard clause to make sure:
     //              message is sent in a guild (server)
     //              message is not a bot message
     //              message starts with the set command prefix
-    if (!msg.guild || msg.author.bot || !msg.content.startsWith(prefix)) return;
+    if (!msg.guild || msg.author.bot) return;
+    if (msg.content.startsWith(tagString)) {
+      isTag = true;
+    } else if (!msg.content.startsWith(prefix)) {
+      return;
+    }
 
     // Format message as a command, then make sure the command exists
-    const args = msg.content.slice(prefix.length).trim().split(/ +/g);
+    let args = msg.content
+      .slice(isTag ? tagString.length : prefix.length)
+      .trim()
+      .split(/ +/g);
+
+    if (isTag) {
+      args = ["fd8", ...args];
+    }
+
     const cmdstr = args.shift().toLowerCase();
     let command = client.commands.get(cmdstr);
     if (!command) return;
