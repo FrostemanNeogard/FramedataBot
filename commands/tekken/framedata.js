@@ -109,14 +109,24 @@ module.exports = {
         return respond(msg, `Error: ${errorMessage}`, slashCommand);
       }
 
-      const { input, hit_level, damage, startup, block, hit, counter, note } =
-        frameData;
+      const {
+        input,
+        hit_level,
+        damage,
+        startup,
+        block,
+        hit,
+        counter,
+        note,
+        name,
+      } = frameData;
+
+      const inputString = name ? `${input} (${name})` : input;
 
       const responseEmbed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(characterCode.toUpperCase())
-        .setDescription(`Move: ${input}`)
-
+        .setDescription(`Move: ${inputString}`)
         .setFooter({
           text: `Please use the report command to submit any feedback you may have.`,
         });
