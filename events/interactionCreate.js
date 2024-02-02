@@ -24,7 +24,10 @@ module.exports = {
 
       await command.execute(interaction, client);
     } catch (error) {
+      // This hopefully fixes the DiscordAPIError[10062] crash that I keep getting (?)
       console.error(error);
+      return;
+
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content: "An error occurred when trying to execute this command.",
