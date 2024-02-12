@@ -129,7 +129,7 @@ module.exports = {
       const responseEmbed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(characterCode.toUpperCase())
-        .setDescription(`Move: ${inputString}`)
+        .setDescription(inputString)
         .setFooter({
           text: `Please use the report command to submit any feedback you may have.`,
         });
@@ -155,17 +155,25 @@ module.exports = {
         { name: "Block", value: block, inline: true },
         { name: "Hit", value: hit, inline: true },
         { name: "Counter", value: counter, inline: true },
-        { name: "Notes", value: note },
+        {
+          name: "Notes",
+          value: note.replaceAll("\n\n", "\n").replaceAll("\n", "\n- "), // Awful bodge, but it doesn't have to be more complicated than this
+          inline: false,
+        },
       ];
 
+      console.log("Note:", note);
       fields.forEach((field) => {
-        if (field.value !== undefined && field.value !== "") {
-          responseEmbed.addFields({
-            name: field.name,
-            value: field.value,
-            inline: field.inline,
-          });
+        let correctedFieldValue = field.value;
+        if (field.value == undefined || field.value == "") {
+          // This uses a zero width space character. Please be very wary of this
+          correctedFieldValue = "​";
         }
+        responseEmbed.addFields({
+          name: field.name,
+          value: correctedFieldValue,
+          inline: field.inline,
+        });
       });
 
       if (!slashCommand) {
