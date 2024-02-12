@@ -55,15 +55,16 @@ module.exports = {
     try {
       if (args.length < 2) {
         console.error(`Missing args.`);
-        return respond(
+        await respond(
           msg,
           `Please provide a move in tekken notation along with the character. You can use the "help" command for additional details.`,
           slashCommand
         );
+        return;
       }
 
       if (!slashCommand) {
-        msg.react("👀");
+        await react(msg, "👀");
       }
       const unformattedInputs = args.slice(1).join("");
       const fetch = (await import("node-fetch")).default;
@@ -80,9 +81,10 @@ module.exports = {
         );
         console.error(`Error: ${errorMessage}`);
         if (!slashCommand) {
-          msg.react("❌");
+          await react(msg, "❌");
         }
-        return respond(msg, `Error: ${errorMessage}`, slashCommand);
+        await respond(msg, `Error: ${errorMessage}`, slashCommand);
+        return;
       }
 
       const characterCode = characterCodeData.characterCode;
@@ -104,9 +106,10 @@ module.exports = {
         );
         console.error(`Error: ${errorMessage}`);
         if (!slashCommand) {
-          msg.react("❌");
+          await react(msg, "❌");
         }
-        return respond(msg, `Error: ${errorMessage}`, slashCommand);
+        await respond(msg, `Error: ${errorMessage}`, slashCommand);
+        return;
       }
 
       const {
@@ -166,10 +169,10 @@ module.exports = {
       });
 
       if (!slashCommand) {
-        msg.react("✅");
+        await react(msg, "✅");
       }
 
-      respond(
+      await respond(
         msg,
         { embeds: [responseEmbed], files: imageFiles },
         slashCommand
@@ -177,14 +180,34 @@ module.exports = {
       return;
     } catch (error) {
       console.error("An error occurred:", error.message);
-      respond(msg, "An error occurred. Please try again later.", slashCommand);
+      await respond(
+        msg,
+        "An error occurred. Please try again later.",
+        slashCommand
+      );
       return;
     }
   },
 };
 
-function respond(msg, reply, slashCommand) {
+async function react(msg, emoji) {
+  console.log(`Reacting with: ${emoji}`);
+  try {
+    await msg.react(emoji);
+  } catch (error) {
+    console.error("An error ocurred:", error.message);
+  }
+}
+
+async function respond(msg, reply, slashCommand) {
   console.log("Sending reply!");
-  if (slashCommand == true) return msg.editReply(reply);
-  else return msg.reply(reply);
+  try {
+    if (slashCommand == true) {
+      await msg.editReply(reply);
+    } else {
+      await msg.reply(reply);
+    }
+  } catch (error) {
+    console.error("An error ocurred:", error.message);
+  }
 }
