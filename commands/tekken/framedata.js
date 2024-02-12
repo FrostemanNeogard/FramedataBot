@@ -98,7 +98,6 @@ module.exports = {
         }),
       });
       const frameData = await frameDataResponse.json();
-      console.log(frameData);
 
       if (frameData.status === 400) {
         const errorMessage = frameData.message.replaceAll(
@@ -168,10 +167,12 @@ module.exports = {
         { name: "Block", value: block, inline: true },
         { name: "Hit", value: hit, inline: true },
         { name: "Counter", value: counter, inline: true },
-        { name: "Notes", value: formattedNotes, inline: false },
       ];
 
-      console.log("Note:", note);
+      if (formattedNotes) {
+        fields.push({ name: "Notes", value: formattedNotes, inline: false });
+      }
+
       fields.forEach((field) => {
         let correctedFieldValue = field.value;
         if (field.value == undefined || field.value == "") {
