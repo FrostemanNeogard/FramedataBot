@@ -98,6 +98,7 @@ module.exports = {
         }),
       });
       const frameData = await frameDataResponse.json();
+      console.log(frameData);
 
       if (frameData.status === 400) {
         const errorMessage = frameData.message.replaceAll(
@@ -148,6 +149,18 @@ module.exports = {
         imageFiles.push(imageFile);
       }
 
+      let formattedNotes = note
+        .replaceAll("\n\n", "\n")
+        .replaceAll("\n", "\n- ");
+
+      if (!formattedNotes.startsWith("\n")) {
+        formattedNotes = `\n- ${formattedNotes}`;
+      }
+
+      if (formattedNotes.endsWith("\n- ")) {
+        formattedNotes = formattedNotes.slice(0, -3);
+      }
+
       const fields = [
         { name: "Hit Level", value: hit_level, inline: true },
         { name: "Damage", value: damage, inline: true },
@@ -155,11 +168,7 @@ module.exports = {
         { name: "Block", value: block, inline: true },
         { name: "Hit", value: hit, inline: true },
         { name: "Counter", value: counter, inline: true },
-        {
-          name: "Notes",
-          value: note.replaceAll("\n\n", "\n").replaceAll("\n", "\n- "), // Awful bodge, but it doesn't have to be more complicated than this
-          inline: false,
-        },
+        { name: "Notes", value: formattedNotes, inline: false },
       ];
 
       console.log("Note:", note);
