@@ -150,6 +150,7 @@ module.exports = {
 
       let formattedNotes = note
         .replaceAll("\n\n", "\n")
+        .replaceAll("\n \n", "\n")
         .replaceAll("\n", "\n- ");
 
       if (!formattedNotes.startsWith("\n")) {
