@@ -66,10 +66,7 @@ module.exports = {
           name: "!ping",
           value: "Responds with 'Pong!'",
         },
-      ])
-      .setFooter({
-        text: `NOTE: These commands are all available as slash commands as well.`,
-      });
+      ]);
     return msg.reply({ embeds: [responseEmbed] });
   },
 };
