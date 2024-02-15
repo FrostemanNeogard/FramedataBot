@@ -34,10 +34,7 @@ module.exports = {
           name: "/ping",
           value: "Responds with 'Pong!'",
         },
-      ])
-      .setFooter({
-        text: `NOTE: These commands are all available as ! commands as well.`,
-      });
+      ]);
     return interaction.reply({ embeds: [responseEmbed] });
   },
   run: async ({ msg }) => {
