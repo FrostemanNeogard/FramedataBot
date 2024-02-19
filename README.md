@@ -47,4 +47,4 @@ Sends your feedback to me so I can review it and fix any problems that may occur
 
 Syntax `/support`
 
-Responds with a Discord embed containing information regarding how you can support me!
+Responds with a Discord embed containing information regarding how you can support me.
