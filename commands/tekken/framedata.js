@@ -112,6 +112,33 @@ module.exports = {
         return;
       }
 
+      if (frameData.length > 1) {
+        if (!slashCommand) {
+          await react(msg, "❌");
+        }
+
+        const similarEmbed = new EmbedBuilder()
+          .setColor(0xff0000)
+          .setTitle("Attack not found")
+          .setDescription("Similar moves:");
+
+        const fields = [];
+
+        for (let i = 0; i < frameData.length; i++) {
+          const input = frameData[i].input;
+          console.log(input);
+          fields.push({
+            name: " ",
+            value: `**${i + 1}.** ${input}`,
+            inline: false,
+          });
+        }
+
+        similarEmbed.setFields(fields);
+        await respond(msg, { embeds: [similarEmbed] }, slashCommand);
+        return;
+      }
+
       const {
         input,
         hit_level,
