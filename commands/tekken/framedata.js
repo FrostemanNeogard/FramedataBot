@@ -121,8 +121,6 @@ module.exports = {
           (item, index) => `**${index + 1}**: ${item.input}`
         );
 
-        console.log(test);
-
         const similarEmbed = new EmbedBuilder()
           .setColor(0xff0000)
           .setTitle("Attack not found")
