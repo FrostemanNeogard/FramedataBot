@@ -8,6 +8,8 @@ module.exports = {
     });
 
     // Log when bot goes online
-    console.log(`${bot.client.user.tag} is now online!`);
+    await client.guilds.fetch();
+    let serverCount = client.guilds.cache.size;
+    console.log(`${client.user.tag} is now online, in ${serverCount} servers!`);
   },
 };
