@@ -117,24 +117,20 @@ module.exports = {
           await react(msg, "❌");
         }
 
+        const test = frameData.map(
+          (item, index) => `**${index + 1}**: ${item.input}`
+        );
+
+        console.log(test);
+
         const similarEmbed = new EmbedBuilder()
           .setColor(0xff0000)
           .setTitle("Attack not found")
-          .setDescription("Similar moves:");
-
-        const fields = [];
-
-        for (let i = 0; i < frameData.length; i++) {
-          const input = frameData[i].input;
-          console.log(input);
-          fields.push({
-            name: " ",
-            value: `**${i + 1}.** ${input}`,
-            inline: false,
+          .setFields({
+            name: "Similar Moves:",
+            value: test.join("\n") ?? "None found",
           });
-        }
 
-        similarEmbed.setFields(fields);
         await respond(msg, { embeds: [similarEmbed] }, slashCommand);
         return;
       }
