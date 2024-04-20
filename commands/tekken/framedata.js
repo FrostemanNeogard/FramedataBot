@@ -123,7 +123,7 @@ module.exports = {
 
         const similarEmbed = new EmbedBuilder()
           .setColor(0xff0000)
-          .setTitle("Attack not found")
+          .setTitle(`Attack not found: ${unformattedInputs}`)
           .setFields({
             name: "Similar Moves:",
             value: test.join("\n") ?? "None found",
