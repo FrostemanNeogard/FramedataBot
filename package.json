@@ -9,9 +9,9 @@
     "needle": "^3.3.1",
     "node-fetch": "^3.3.2"
   },
-  "name": "gttc",
+  "name": "tekkenframedatabot",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
