@@ -66,7 +66,7 @@ export class Framedata {
   }
 
   @SimpleCommand({
-    aliases: ["fd", "fd8", `@<${CLIENT_ID}>`],
+    aliases: ["fd", "fd8", `<@${CLIENT_ID}>`],
   })
   simpleFramedata(command: SimpleCommandMessage) {
     const args = command.argString.split(" ");
