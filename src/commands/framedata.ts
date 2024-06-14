@@ -1,9 +1,7 @@
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
-  Embed,
   EmbedBuilder,
-  Message,
 } from "discord.js";
 import {
   Discord,
