@@ -3,15 +3,8 @@ import {
   CommandInteraction,
   EmbedBuilder,
 } from "discord.js";
-import {
-  Discord,
-  SimpleCommand,
-  SimpleCommandMessage,
-  Slash,
-  SlashOption,
-} from "discordx";
+import { Discord, Slash, SlashOption } from "discordx";
 import "dotenv/config";
-const { CLIENT_ID } = process.env;
 
 @Discord()
 export class Framedata {
