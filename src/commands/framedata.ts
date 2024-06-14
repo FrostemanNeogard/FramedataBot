@@ -35,7 +35,7 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    const responseEmbed = this.framedata(character, input);
+    const responseEmbed = Framedata.getFrameDataEmbedBuilder(character, input);
     interaction.reply({ embeds: [responseEmbed] });
     return;
   }
@@ -60,31 +60,15 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    const responseEmbed = this.framedata(character, input);
+    const responseEmbed = Framedata.getFrameDataEmbedBuilder(character, input);
     interaction.reply({ embeds: [responseEmbed] });
     return;
   }
 
-  @SimpleCommand({
-    aliases: ["fd", "fd8", `<@${CLIENT_ID}>`],
-  })
-  simpleFramedata(command: SimpleCommandMessage) {
-    const args = command.argString.split(" ");
-    if (args.length < 2) {
-      command.message.reply("oh no");
-      return;
-    }
-    const inputs: string[] = args;
-    inputs.shift();
-    if (inputs.length < 1) {
-      return;
-    }
-    const responseEmbed = this.framedata(args[0], inputs.join());
-    command.message.reply({ embeds: [responseEmbed] });
-    return;
-  }
-
-  framedata(character: string, inputs: string): EmbedBuilder {
+  static getFrameDataEmbedBuilder(
+    character: string,
+    inputs: string
+  ): EmbedBuilder {
     return new EmbedBuilder()
       .setTitle("Framedata")
       .addFields(
