@@ -8,6 +8,7 @@ import { Discord, Slash, SlashOption } from "discordx";
 import "dotenv/config";
 import { existsSync } from "fs";
 import * as path from "path";
+import { DiscordEmbedWithImage } from "../_types/responses";
 
 @Discord()
 export class Framedata {
@@ -32,7 +33,7 @@ export class Framedata {
     interaction: CommandInteraction
   ): void {
     Framedata.getFrameDataEmbedBuilder(character, input).then((embed) =>
-      interaction.reply({ embeds: [embed] })
+      interaction.reply(embed)
     );
   }
 
@@ -57,14 +58,14 @@ export class Framedata {
     interaction: CommandInteraction
   ): void {
     Framedata.getFrameDataEmbedBuilder(character, input).then((embed) =>
-      interaction.reply({ embeds: [embed] })
+      interaction.reply(embed)
     );
   }
 
   static async getFrameDataEmbedBuilder(
     character: string,
     inputs: string
-  ): Promise<EmbedBuilder> {
+  ): Promise<DiscordEmbedWithImage> {
     const characterCode = character;
 
     const response = await fetch(`http://localhost:3000/framedata`, {
@@ -80,10 +81,14 @@ export class Framedata {
     const data = await response.json();
 
     if (response.status != 201) {
-      return new EmbedBuilder().setTitle("Error").setFields({
-        name: "An error ocurred",
-        value: data.message ?? "Unknown error.",
-      });
+      return {
+        embeds: [
+          new EmbedBuilder().setTitle("Error").setFields({
+            name: "An error ocurred",
+            value: data.message ?? "Unknown error.",
+          }),
+        ],
+      };
     }
 
     const {
@@ -125,10 +130,15 @@ export class Framedata {
           inline: true,
         },
         { name: "Hit", value: this.validateEmbedFieldValue(hit), inline: true },
-        { name: "Counter", value: this.validateEmbedFieldValue(counter) },
+        {
+          name: "Counter",
+          value: this.validateEmbedFieldValue(counter),
+          inline: true,
+        },
         {
           name: "Notes",
           value: this.validateEmbedFieldValue(note),
+          inline: true,
         }
       );
 
@@ -143,7 +153,7 @@ export class Framedata {
       imageFiles.push(imageFile);
     }
 
-    return responseEmbed;
+    return { embeds: [responseEmbed], files: imageFiles };
   }
 
   static readonly zeroWidthSpace: string = "​";
