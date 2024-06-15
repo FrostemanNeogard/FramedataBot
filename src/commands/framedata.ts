@@ -9,6 +9,7 @@ import "dotenv/config";
 import { existsSync } from "fs";
 import * as path from "path";
 import { DiscordEmbedWithImage } from "../_types/responses";
+import { COLORS, EMBED_FIELDS } from "../util/config";
 
 @Discord()
 export class Framedata {
@@ -108,6 +109,8 @@ export class Framedata {
     const responseEmbed = new EmbedBuilder()
       .setTitle(character.toUpperCase())
       .setDescription(inputString)
+      .setColor(COLORS.success)
+      .setFooter({ text: EMBED_FIELDS.footer })
       .setFields(
         {
           name: "Hit Level",
