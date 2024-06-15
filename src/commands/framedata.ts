@@ -1,11 +1,13 @@
-import axios from "axios";
 import {
   ApplicationCommandOptionType,
+  AttachmentBuilder,
   CommandInteraction,
   EmbedBuilder,
 } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
 import "dotenv/config";
+import { existsSync } from "fs";
+import * as path from "path";
 
 @Discord()
 export class Framedata {
@@ -63,16 +65,93 @@ export class Framedata {
     character: string,
     inputs: string
   ): Promise<EmbedBuilder> {
-    const response = await axios.post("http://localhost:3000/framedata", {
-      characterCode: character,
-      gameCode: "tekken8",
-      input: inputs,
+    const characterCode = character;
+
+    const response = await fetch(`http://localhost:3000/framedata`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        characterCode: characterCode,
+        gameCode: "tekken8",
+        input: inputs,
+      }),
     });
 
-    console.log(response.data);
+    const data = await response.json();
 
-    return new EmbedBuilder()
-      .setTitle("Framedata")
-      .setFields({ name: "one", value: "two" });
+    if (response.status != 201) {
+      return new EmbedBuilder().setTitle("Error").setFields({
+        name: "An error ocurred",
+        value: data.message ?? "Unknown error.",
+      });
+    }
+
+    const {
+      name,
+      input,
+      hit_level,
+      damage,
+      startup,
+      block,
+      hit,
+      counter,
+      note,
+    } = data;
+
+    const inputString = name ? `${input} (${name})` : input;
+
+    const responseEmbed = new EmbedBuilder()
+      .setTitle(character.toUpperCase())
+      .setDescription(inputString)
+      .setFields(
+        {
+          name: "Hit Level",
+          value: this.validateEmbedFieldValue(hit_level),
+          inline: true,
+        },
+        {
+          name: "Damage",
+          value: this.validateEmbedFieldValue(damage),
+          inline: true,
+        },
+        {
+          name: "Startup",
+          value: this.validateEmbedFieldValue(startup),
+          inline: true,
+        },
+        {
+          name: "Block",
+          value: this.validateEmbedFieldValue(block),
+          inline: true,
+        },
+        { name: "Hit", value: this.validateEmbedFieldValue(hit), inline: true },
+        { name: "Counter", value: this.validateEmbedFieldValue(counter) },
+        {
+          name: "Notes",
+          value: this.validateEmbedFieldValue(note),
+        }
+      );
+
+    let imageFiles = [];
+    const imageFilePath = path.join(__dirname, `./images/${characterCode}.png`);
+    const fileExists = existsSync(imageFilePath);
+    if (fileExists) {
+      const imageFile = new AttachmentBuilder(imageFilePath, {
+        name: `${characterCode}.png`,
+      });
+      responseEmbed.setThumbnail(encodeURI(`attachment://${imageFile.name}`));
+      imageFiles.push(imageFile);
+    }
+
+    return responseEmbed;
+  }
+
+  static readonly zeroWidthSpace: string = "​";
+
+  static validateEmbedFieldValue(input: string): string {
+    if (!input || input.length <= 0) {
+      return this.zeroWidthSpace;
+    }
+    return input;
   }
 }
