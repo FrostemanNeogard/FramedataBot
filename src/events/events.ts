@@ -17,8 +17,8 @@ export class EventListener {
     }
     const character = args[1];
     const inputs = args.slice(2, args.length).join(" ");
-    Framedata.getFrameDataEmbedBuilder(character, inputs).then((embed) =>
-      message.reply(embed)
+    Framedata.getFrameDataResponse(character, inputs).then((response) =>
+      message.reply(response)
     );
   }
 }

@@ -8,7 +8,7 @@ import { Discord, Slash, SlashOption } from "discordx";
 import "dotenv/config";
 import { existsSync } from "fs";
 import * as path from "path";
-import { DiscordEmbedWithImage } from "../_types/responses";
+import { DiscordEmbedResponse } from "../types/responses";
 import { COLORS, EMBED_FIELDS } from "../util/config";
 
 @Discord()
@@ -33,8 +33,8 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    Framedata.getFrameDataEmbedBuilder(character, input).then((embed) =>
-      interaction.reply(embed)
+    Framedata.getFrameDataResponse(character, input).then((response) =>
+      interaction.reply(response)
     );
   }
 
@@ -58,15 +58,15 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    Framedata.getFrameDataEmbedBuilder(character, input).then((embed) =>
-      interaction.reply(embed)
+    Framedata.getFrameDataResponse(character, input).then((response) =>
+      interaction.reply(response)
     );
   }
 
-  static async getFrameDataEmbedBuilder(
+  static async getFrameDataResponse(
     character: string,
     inputs: string
-  ): Promise<DiscordEmbedWithImage> {
+  ): Promise<DiscordEmbedResponse> {
     const characterCode = character;
 
     const response = await fetch(`http://localhost:3000/framedata`, {
