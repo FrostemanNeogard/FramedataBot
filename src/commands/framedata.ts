@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -28,9 +29,9 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    const responseEmbed = Framedata.getFrameDataEmbedBuilder(character, input);
-    interaction.reply({ embeds: [responseEmbed] });
-    return;
+    Framedata.getFrameDataEmbedBuilder(character, input).then((embed) =>
+      interaction.reply({ embeds: [embed] })
+    );
   }
 
   @Slash({
@@ -53,20 +54,25 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    const responseEmbed = Framedata.getFrameDataEmbedBuilder(character, input);
-    interaction.reply({ embeds: [responseEmbed] });
-    return;
+    Framedata.getFrameDataEmbedBuilder(character, input).then((embed) =>
+      interaction.reply({ embeds: [embed] })
+    );
   }
 
-  static getFrameDataEmbedBuilder(
+  static async getFrameDataEmbedBuilder(
     character: string,
     inputs: string
-  ): EmbedBuilder {
+  ): Promise<EmbedBuilder> {
+    const response = await axios.post("http://localhost:3000/framedata", {
+      characterCode: character,
+      gameCode: "tekken8",
+      input: inputs,
+    });
+
+    console.log(response.data);
+
     return new EmbedBuilder()
       .setTitle("Framedata")
-      .addFields(
-        { name: "Character", value: character },
-        { name: "Inputs", value: inputs }
-      );
+      .setFields({ name: "one", value: "two" });
   }
 }

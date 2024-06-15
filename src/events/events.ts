@@ -16,11 +16,9 @@ export class EventListener {
       return;
     }
     const character = args[1];
-    const inputs = args.slice(2, args.length);
-    const responseEmbed = Framedata.getFrameDataEmbedBuilder(
-      character,
-      inputs.join(" ")
+    const inputs = args.slice(2, args.length).join(" ");
+    Framedata.getFrameDataEmbedBuilder(character, inputs).then((embed) =>
+      message.reply({ embeds: [embed] })
     );
-    message.reply({ embeds: [responseEmbed] });
   }
 }
