@@ -33,8 +33,8 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    Framedata.getFrameDataResponse(character, input).then((response) =>
-      interaction.reply(response)
+    Framedata.getFrameDataResponse(character, input, "tekken7").then(
+      (response) => interaction.reply(response)
     );
   }
 
@@ -58,14 +58,15 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    Framedata.getFrameDataResponse(character, input).then((response) =>
-      interaction.reply(response)
+    Framedata.getFrameDataResponse(character, input, "tekken8").then(
+      (response) => interaction.reply(response)
     );
   }
 
   static async getFrameDataResponse(
     character: string,
-    inputs: string
+    inputs: string,
+    gameCode: string
   ): Promise<DiscordEmbedResponse> {
     const characterCodeResponse = await fetch(
       `http://localhost:3000/character-code/${character.toLowerCase()}`
@@ -92,7 +93,7 @@ export class Framedata {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         characterCode: characterCode,
-        gameCode: "tekken8",
+        gameCode: gameCode,
         input: inputs,
       }),
     });
