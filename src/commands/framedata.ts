@@ -67,7 +67,25 @@ export class Framedata {
     character: string,
     inputs: string
   ): Promise<DiscordEmbedResponse> {
-    const characterCode = character;
+    const characterCodeResponse = await fetch(
+      `http://localhost:3000/character-code/${character.toLowerCase()}`
+    );
+
+    const characterCodeData = await characterCodeResponse.json();
+
+    if (characterCodeData.status === 400) {
+      const errorMessage = characterCodeData.message.replaceAll(
+        "BadRequestException: ",
+        ""
+      );
+      console.error(`Error: ${errorMessage}`);
+      const errorEmbed = new EmbedBuilder()
+        .setTitle("Error")
+        .setDescription("An error has ocurred");
+      return { embeds: [errorEmbed] };
+    }
+
+    const characterCode = characterCodeData.characterCode;
 
     const response = await fetch(`http://localhost:3000/framedata`, {
       method: "POST",
@@ -82,13 +100,11 @@ export class Framedata {
     const data = await response.json();
 
     if (response.status != 201) {
+      const errorEmbed = new EmbedBuilder()
+        .setTitle("Error")
+        .setDescription("An error has ocurred");
       return {
-        embeds: [
-          new EmbedBuilder().setTitle("Error").setFields({
-            name: "An error ocurred",
-            value: data.message ?? "Unknown error.",
-          }),
-        ],
+        embeds: [errorEmbed],
       };
     }
 
@@ -105,6 +121,20 @@ export class Framedata {
     } = data;
 
     const inputString = name ? `${input} (${name})` : input;
+
+    let formattedNotes = note
+      .replaceAll("\n\n\n", "\n")
+      .replaceAll("\n\n", "\n")
+      .replaceAll("\n \n", "\n")
+      .replaceAll("\n", "\n- ");
+
+    if (!formattedNotes.startsWith("\n")) {
+      formattedNotes = `\n- ${formattedNotes}`;
+    }
+
+    if (formattedNotes.endsWith("\n- ")) {
+      formattedNotes = formattedNotes.slice(0, -3);
+    }
 
     const responseEmbed = new EmbedBuilder()
       .setTitle(character.toUpperCase())
@@ -140,7 +170,7 @@ export class Framedata {
         },
         {
           name: "Notes",
-          value: this.validateEmbedFieldValue(note),
+          value: this.validateEmbedFieldValue(formattedNotes),
           inline: true,
         }
       );
