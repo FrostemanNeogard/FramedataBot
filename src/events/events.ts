@@ -12,7 +12,9 @@ export class EventListener {
     if (!message.content.startsWith(`<@${CLIENT_ID}>`)) return;
     const args = message.content.split(" ");
     if (args.length <= 2) {
-      message.reply(`Invalid argument amount`);
+      message.reply(
+        `Please provide a character and an attack notation separated by spaces.`
+      );
       return;
     }
     const character = args[1];
