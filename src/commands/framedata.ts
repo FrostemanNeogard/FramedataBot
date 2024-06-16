@@ -100,12 +100,34 @@ export class Framedata {
 
     const data = await response.json();
 
-    if (response.status != 201) {
+    console.log(data);
+
+    if (data.status == 400) {
       const errorEmbed = new EmbedBuilder()
         .setTitle("Error")
-        .setDescription("An error has ocurred");
+        .setDescription(data.message.replaceAll("BadRequestException: ", ""))
+        .setColor(COLORS.danger);
       return {
         embeds: [errorEmbed],
+      };
+    }
+
+    if (data.length > 0) {
+      const warningEmbed = new EmbedBuilder()
+        .setTitle(`Attack not found: ${inputs}`)
+        .setFields({
+          name: "Similar moves:",
+          value:
+            data
+              .map(
+                (move: { [key: string]: any }, index: number) =>
+                  `**${index + 1}:** ${move.input}`
+              )
+              .join("\n") ?? "None found",
+        })
+        .setColor(COLORS.warning);
+      return {
+        embeds: [warningEmbed],
       };
     }
 
