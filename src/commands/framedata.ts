@@ -68,9 +68,21 @@ export class Framedata {
     inputs: string,
     gameCode: string
   ): Promise<DiscordEmbedResponse> {
-    const characterCodeResponse = await fetch(
-      `http://localhost:3000/character-code/${character.toLowerCase()}`
+    const characterCodeResponse = await Framedata.getCharacterCodeResponse(
+      character
     );
+
+    if (characterCodeResponse == null) {
+      const errorEmbed = new EmbedBuilder()
+        .setTitle("ERROR")
+        .setDescription(
+          "An error ocurred when attempting to fetch framedata. Please try again later."
+        )
+        .setColor(COLORS.danger);
+      return {
+        embeds: [errorEmbed],
+      };
+    }
 
     const characterCodeData = await characterCodeResponse.json();
 
@@ -88,19 +100,25 @@ export class Framedata {
 
     const characterCode = characterCodeData.characterCode;
 
-    const response = await fetch(`http://localhost:3000/framedata`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        characterCode: characterCode,
-        gameCode: gameCode,
-        input: inputs,
-      }),
-    });
+    const response = await Framedata.getFramedataResponse(
+      characterCode,
+      gameCode,
+      inputs
+    );
+
+    if (response == null) {
+      const errorEmbed = new EmbedBuilder()
+        .setTitle("ERROR")
+        .setDescription(
+          "An error ocurred when attempting to fetch framedata. Please try again later."
+        )
+        .setColor(COLORS.danger);
+      return {
+        embeds: [errorEmbed],
+      };
+    }
 
     const data = await response.json();
-
-    console.log(data);
 
     if (data.status == 400) {
       const errorEmbed = new EmbedBuilder()
@@ -213,6 +231,38 @@ export class Framedata {
   }
 
   static readonly zeroWidthSpace: string = "​";
+
+  private static async getCharacterCodeResponse(character: string) {
+    try {
+      return await fetch(
+        `http://localhost:3000/character-code/${character.toLowerCase()}`
+      );
+    } catch (err) {
+      console.error(`An error ocurred when fetching character code: ${err}`);
+      return null;
+    }
+  }
+
+  private static async getFramedataResponse(
+    characterCode: any,
+    gameCode: string,
+    inputs: string
+  ) {
+    try {
+      return await fetch(`http://localhost:3000/framedata`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          characterCode: characterCode,
+          gameCode: gameCode,
+          input: inputs,
+        }),
+      });
+    } catch (err) {
+      console.error(`An error ocurred when fetching framedata: ${err}`);
+      return null;
+    }
+  }
 
   static validateEmbedFieldValue(input: string): string {
     if (!input || input.length <= 0) {
