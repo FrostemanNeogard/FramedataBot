@@ -14,7 +14,7 @@ import { COLORS, EMBED_FIELDS } from "../util/config";
 @Discord()
 export class Framedata {
   @Slash({
-    description: `Get framedata for t7`,
+    description: `Look up framedata for a given TEKKEN 7 attack.`,
   })
   fd7(
     @SlashOption({
@@ -39,7 +39,7 @@ export class Framedata {
   }
 
   @Slash({
-    description: `Get framedata for t8`,
+    description: `Look up framedata for a given TEKKEN 8 attack.`,
   })
   fd8(
     @SlashOption({
