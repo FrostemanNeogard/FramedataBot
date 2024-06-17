@@ -208,13 +208,16 @@ export class Framedata {
           name: "Counter",
           value: this.validateEmbedFieldValue(counter),
           inline: true,
-        },
-        {
-          name: "Notes",
-          value: this.validateEmbedFieldValue(formattedNotes),
-          inline: true,
         }
       );
+
+    if (note.length > 0) {
+      responseEmbed.addFields({
+        name: "Notes",
+        value: this.validateEmbedFieldValue(formattedNotes),
+        inline: true,
+      });
+    }
 
     let imageFiles = [];
     const imageFilePath = path.join(__dirname, `./images/${characterCode}.png`);
