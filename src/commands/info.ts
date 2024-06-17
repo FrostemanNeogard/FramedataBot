@@ -46,6 +46,7 @@ export class Info {
     @SlashOption({
       name: "message",
       description: "Message to send",
+      required: true,
       type: ApplicationCommandOptionType.String,
     })
     message: string,
