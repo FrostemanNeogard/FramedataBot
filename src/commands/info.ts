@@ -1,0 +1,106 @@
+import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
+import { Discord, Slash, SlashOption } from "discordx";
+import { COLORS, defaultEmbed } from "../util/config";
+import "dotenv/config";
+const { OWNER_ID } = process.env;
+
+@Discord()
+export class Info {
+  @Slash({
+    description: "Get some help",
+  })
+  help(interaction: CommandInteraction) {
+    const helpEmbed = defaultEmbed;
+    helpEmbed
+      .setTitle("HELP")
+      .setDescription("Information about this bot and its commands.")
+      .setFields(
+        {
+          name: "/fd8",
+          value: "Responds with frame data for the given attack. (Tekken 8)",
+        },
+        {
+          name: "/fd7",
+          value: "Responds with frame data for the given attack. (Tekken 7)",
+        },
+        {
+          name: "/report",
+          value: "Send feedback about this bot.",
+        },
+        {
+          name: "/help",
+          value: "Replies with information for all commands.",
+        },
+        {
+          name: "/support",
+          value: "View how to support me as the creator of this bot :)",
+        }
+      );
+    interaction.reply({ embeds: [helpEmbed] });
+  }
+
+  @Slash({
+    description: "Send a report about this bot.",
+  })
+  async report(
+    @SlashOption({
+      name: "message",
+      description: "Message to send",
+      type: ApplicationCommandOptionType.String,
+    })
+    message: string,
+    interaction: CommandInteraction
+  ) {
+    try {
+      const feedbackReciever = await interaction.guild?.members.fetch(
+        OWNER_ID ?? ""
+      );
+      if (!feedbackReciever) {
+        throw new Error("Couldn't get owner.");
+      }
+      feedbackReciever.send(
+        `Feedback recieved by ${interaction.user}: ${message}`
+      );
+      const successEmbed = defaultEmbed;
+      successEmbed
+        .setTitle("Success!")
+        .setDescription("Your feedback has been sent, thank you!")
+        .setFooter(null);
+      interaction.reply({ embeds: [successEmbed] });
+    } catch (err) {
+      console.error(
+        err instanceof Error
+          ? `Error ocurred when DMing owner: ${err.message}`
+          : `Unknown error ocurred when DMing owner: ${err}`
+      );
+      const errorEmbed = defaultEmbed;
+      errorEmbed
+        .setTitle("Error.")
+        .setColor(COLORS.danger)
+        .setDescription("An error ocurred. Please try again later.");
+      interaction.reply({ embeds: [errorEmbed] });
+    }
+  }
+
+  @Slash({
+    description: "View how you can support the creator of this bot.",
+  })
+  support(interaction: CommandInteraction) {
+    const supportEmbed = defaultEmbed;
+    supportEmbed
+      .setTitle("SUPPORT")
+      .setDescription("Heloo")
+      .setFields([
+        {
+          name: "Follow me on Twitter!",
+          value: "https://twitter.com/funnyorangcat",
+        },
+        {
+          name: "Donate!",
+          value: "https://www.buymeacoffee.com/funnyorangcat",
+        },
+      ])
+      .setFooter({ text: "Every bit is greatly appreciated ❤" });
+    interaction.reply({ embeds: [supportEmbed] });
+  }
+}
