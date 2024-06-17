@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
-import { COLORS, defaultEmbed } from "../util/config";
+import { COLORS, getDefaultEmbed } from "../util/config";
 import "dotenv/config";
 const { OWNER_ID } = process.env;
 
@@ -10,7 +10,7 @@ export class Info {
     description: "Get some help",
   })
   help(interaction: CommandInteraction) {
-    const helpEmbed = defaultEmbed;
+    const helpEmbed = getDefaultEmbed();
     helpEmbed
       .setTitle("HELP")
       .setDescription("Information about this bot and its commands.")
@@ -61,7 +61,7 @@ export class Info {
       feedbackReciever.send(
         `Feedback recieved by ${interaction.user}: ${message}`
       );
-      const successEmbed = defaultEmbed;
+      const successEmbed = getDefaultEmbed();
       successEmbed
         .setTitle("Success!")
         .setDescription("Your feedback has been sent, thank you!")
@@ -73,7 +73,7 @@ export class Info {
           ? `Error ocurred when DMing owner: ${err.message}`
           : `Unknown error ocurred when DMing owner: ${err}`
       );
-      const errorEmbed = defaultEmbed;
+      const errorEmbed = getDefaultEmbed();
       errorEmbed
         .setTitle("Error.")
         .setColor(COLORS.danger)
@@ -86,7 +86,7 @@ export class Info {
     description: "View how you can support the creator of this bot.",
   })
   support(interaction: CommandInteraction) {
-    const supportEmbed = defaultEmbed;
+    const supportEmbed = getDefaultEmbed();
     supportEmbed
       .setTitle("SUPPORT")
       .setDescription("Heloo")

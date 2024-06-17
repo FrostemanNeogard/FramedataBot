@@ -10,6 +10,7 @@ export const EMBED_FIELDS = {
   footer: "Please use the report command to submit any feedback you may have.",
 };
 
-export const defaultEmbed = new EmbedBuilder()
-  .setColor(COLORS.success)
-  .setFooter({ text: EMBED_FIELDS.footer });
+export const getDefaultEmbed = () =>
+  new EmbedBuilder()
+    .setColor(COLORS.success)
+    .setFooter({ text: EMBED_FIELDS.footer });
