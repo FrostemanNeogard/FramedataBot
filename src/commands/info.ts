@@ -63,7 +63,7 @@ export class Info {
       );
       const successEmbed = getDefaultEmbed();
       successEmbed
-        .setTitle("Success!")
+        .setTitle("SUCCESS!")
         .setDescription("Your feedback has been sent, thank you!")
         .setFooter(null);
       interaction.reply({ embeds: [successEmbed] });
@@ -75,7 +75,7 @@ export class Info {
       );
       const errorEmbed = getDefaultEmbed();
       errorEmbed
-        .setTitle("Error.")
+        .setTitle("ERROR.")
         .setColor(COLORS.danger)
         .setDescription("An error ocurred. Please try again later.");
       interaction.reply({ embeds: [errorEmbed] });
@@ -89,7 +89,9 @@ export class Info {
     const supportEmbed = getDefaultEmbed();
     supportEmbed
       .setTitle("SUPPORT")
-      .setDescription("Heloo")
+      .setDescription(
+        "Here's how you can support me as the creator of this bot:"
+      )
       .setFields([
         {
           name: "Follow me on Twitter!",

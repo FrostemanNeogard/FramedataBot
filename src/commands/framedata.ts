@@ -81,7 +81,7 @@ export class Framedata {
       );
       console.error(`Error: ${errorMessage}`);
       const errorEmbed = new EmbedBuilder()
-        .setTitle("Error")
+        .setTitle("ERROR")
         .setDescription("An error has ocurred");
       return { embeds: [errorEmbed] };
     }
@@ -104,7 +104,7 @@ export class Framedata {
 
     if (data.status == 400) {
       const errorEmbed = new EmbedBuilder()
-        .setTitle("Error")
+        .setTitle("ERROR")
         .setDescription(data.message.replaceAll("BadRequestException: ", ""))
         .setColor(COLORS.danger);
       return {
