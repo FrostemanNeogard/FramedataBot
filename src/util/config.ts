@@ -1,9 +1,9 @@
 import { EmbedBuilder } from "discord.js";
 
 export const COLORS = {
-  success: 0x00ff00,
-  warning: 0xffff00,
-  danger: 0xff0000,
+  success: 0x8ef266,
+  warning: 0xfada69,
+  danger: 0xfa7069,
 };
 
 export const EMBED_FIELDS = {
