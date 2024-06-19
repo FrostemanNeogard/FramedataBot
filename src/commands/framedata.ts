@@ -13,6 +13,8 @@ import { COLORS, EMBED_FIELDS } from "../util/config";
 
 @Discord()
 export class Framedata {
+  static readonly zeroWidthSpace: string = "​";
+
   @Slash({
     description: `Look up framedata for a given TEKKEN 7 attack.`,
   })
@@ -163,20 +165,6 @@ export class Framedata {
 
     const inputString = name ? `${input} (${name})` : input;
 
-    let formattedNotes = note
-      .replaceAll("\n\n\n", "\n")
-      .replaceAll("\n\n", "\n")
-      .replaceAll("\n \n", "\n")
-      .replaceAll("\n", "\n- ");
-
-    if (!formattedNotes.startsWith("\n")) {
-      formattedNotes = `\n- ${formattedNotes}`;
-    }
-
-    if (formattedNotes.endsWith("\n- ")) {
-      formattedNotes = formattedNotes.slice(0, -3);
-    }
-
     const responseEmbed = new EmbedBuilder()
       .setTitle(character.toUpperCase())
       .setDescription(inputString)
@@ -214,7 +202,9 @@ export class Framedata {
     if (note.length > 0) {
       responseEmbed.addFields({
         name: "Notes",
-        value: this.validateEmbedFieldValue(formattedNotes),
+        value: this.validateEmbedFieldValue(
+          `- ${note.split("\n").join("\n- ")}`
+        ),
         inline: true,
       });
     }
@@ -233,9 +223,7 @@ export class Framedata {
     return { embeds: [responseEmbed], files: imageFiles };
   }
 
-  static readonly zeroWidthSpace: string = "​";
-
-  private static async getCharacterCodeResponse(character: string) {
+  static async getCharacterCodeResponse(character: string) {
     try {
       return await fetch(
         `http://localhost:3000/character-code/${character.toLowerCase()}`
@@ -246,7 +234,7 @@ export class Framedata {
     }
   }
 
-  private static async getFramedataResponse(
+  static async getFramedataResponse(
     characterCode: any,
     gameCode: string,
     inputs: string
