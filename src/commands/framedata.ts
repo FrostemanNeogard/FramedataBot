@@ -35,8 +35,8 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    Framedata.getFrameDataResponse(character, input, "tekken7").then(
-      (response) => interaction.reply(response)
+    Framedata.getFramedataEmbed(character, input, "tekken7").then((response) =>
+      interaction.reply(response)
     );
   }
 
@@ -60,12 +60,12 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    Framedata.getFrameDataResponse(character, input, "tekken8").then(
-      (response) => interaction.reply(response)
+    Framedata.getFramedataEmbed(character, input, "tekken8").then((response) =>
+      interaction.reply(response)
     );
   }
 
-  static async getFrameDataResponse(
+  static async getFramedataEmbed(
     character: string,
     inputs: string,
     gameCode: string
