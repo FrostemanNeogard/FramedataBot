@@ -1,6 +1,6 @@
-# Tekken Framedata Bot
+# Framedata Bot
 
-This is a Discord bot which provides frame data for a given move of a specified character for Tekken 8 (and Tekken 7!).
+This is a Discord bot which provides frame data for a given move of a specified character for fighting games. There is currently data for Tekken 8 and Tekken 7.
 
 # Usage
 
