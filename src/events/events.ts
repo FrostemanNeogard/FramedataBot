@@ -11,6 +11,9 @@ export class EventListener {
   onMessage([message]: ArgsOf<"messageCreate">) {
     if (!message.content.startsWith(`<@${CLIENT_ID}>`)) return;
     const args = message.content.split(" ");
+    while (args.includes("")) {
+      args.splice(args.indexOf(""), 1);
+    }
     if (args.length <= 2) {
       message.reply(
         `Please provide a character and an attack notation separated by spaces.`
