@@ -133,17 +133,20 @@ export class Framedata {
     }
 
     if (data.length > 0) {
+      const similarMoveNames =
+        data
+          .map(
+            (move: { [key: string]: any }, index: number) =>
+              `**${index + 1}:** ${move.input}`
+          )
+          .join("\n") ?? "None found";
+
       const warningEmbed = new EmbedBuilder()
         .setTitle(`Attack not found: ${inputs}`)
         .setFields({
           name: "Similar moves:",
           value:
-            data
-              .map(
-                (move: { [key: string]: any }, index: number) =>
-                  `**${index + 1}:** ${move.input}`
-              )
-              .join("\n") ?? "None found",
+            similarMoveNames.length != 0 ? similarMoveNames : "None found.",
         })
         .setColor(COLORS.warning);
       return {
