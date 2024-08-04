@@ -81,6 +81,7 @@ export class Framedata {
           "An error ocurred when attempting to fetch framedata. Please try again later."
         )
         .setColor(COLORS.danger);
+      console.log(`Couldn't fetch API at all.`);
       return {
         embeds: [errorEmbed],
       };
@@ -97,6 +98,7 @@ export class Framedata {
       const errorEmbed = new EmbedBuilder()
         .setTitle("ERROR")
         .setDescription("An error has ocurred");
+      console.log(`An API related error ocurred: ${errorMessage}`);
       return { embeds: [errorEmbed] };
     }
 
@@ -115,6 +117,7 @@ export class Framedata {
           "An error ocurred when attempting to fetch framedata. Please try again later."
         )
         .setColor(COLORS.danger);
+      console.log(`Couldn't fetch data at all.`);
       return {
         embeds: [errorEmbed],
       };
@@ -127,6 +130,7 @@ export class Framedata {
         .setTitle("ERROR")
         .setDescription(data.message.replaceAll("BadRequestException: ", ""))
         .setColor(COLORS.danger);
+      console.log(`An API related error ocurred: ${data.message}`);
       return {
         embeds: [errorEmbed],
       };
@@ -149,6 +153,7 @@ export class Framedata {
             similarMoveNames.length != 0 ? similarMoveNames : "None found.",
         })
         .setColor(COLORS.warning);
+      console.log(`Sending "Similar Moves" embed for ${character}'s ${inputs}`);
       return {
         embeds: [warningEmbed],
       };
@@ -203,6 +208,7 @@ export class Framedata {
       );
 
     if (note.length > 0) {
+      console.log(`Adding ${note.length} notes`);
       responseEmbed.addFields({
         name: "Notes",
         value: this.validateEmbedFieldValue(
@@ -216,6 +222,7 @@ export class Framedata {
     const imageFilePath = path.join(__dirname, `./images/${characterCode}.png`);
     const fileExists = existsSync(imageFilePath);
     if (fileExists) {
+      console.log(`Found image for character ${character}.`);
       const imageFile = new AttachmentBuilder(imageFilePath, {
         name: `${characterCode}.png`,
       });
@@ -223,6 +230,7 @@ export class Framedata {
       imageFiles.push(imageFile);
     }
 
+    console.log(`Sending response for ${character}'s ${inputString}`);
     return { embeds: [responseEmbed], files: imageFiles };
   }
 
