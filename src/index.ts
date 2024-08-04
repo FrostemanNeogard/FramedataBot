@@ -19,11 +19,11 @@ client.once(Events.ClientReady, async () => {
 
 client.on(Events.InteractionCreate, (interaction: Interaction) => {
   console.log(
-    `\nCommand: "${interaction.toString()}"\n\bwas run by: "${
+    `\nCommand: "${interaction.toString()}"\n\b was run by: "${
       interaction.user.globalName
-    }" \n\bin channel: "${interaction.channelId}" \n\bin server: "${
+    }" \n\b in channel: "${interaction.channelId}" \n\b in server: "${
       interaction.guild?.name
-    }" \n\bat: ${new Date().toLocaleDateString()}\n`
+    }" \n\b at: ${new Date().toLocaleDateString()}\n`
   );
   client.executeInteraction(interaction);
 });
