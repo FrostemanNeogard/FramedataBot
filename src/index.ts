@@ -2,6 +2,7 @@ import "dotenv/config";
 import { Events, IntentsBitField, Interaction } from "discord.js";
 import { Client } from "discordx";
 import { dirname, importx } from "@discordx/importer";
+import { time } from "console";
 
 const { TOKEN, DEV, TEST_GUILD_ID } = process.env;
 
@@ -17,6 +18,13 @@ client.once(Events.ClientReady, async () => {
 });
 
 client.on(Events.InteractionCreate, (interaction: Interaction) => {
+  console.log(
+    `\nCommand: "${interaction.toString()}"\n\bwas run by: "${
+      interaction.user.globalName
+    }" \n\bin channel: "${interaction.channelId}" \n\bin server: "${
+      interaction.guild?.name
+    }" \n\bat: ${new Date().toLocaleDateString()}\n`
+  );
   client.executeInteraction(interaction);
 });
 
