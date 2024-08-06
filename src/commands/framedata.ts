@@ -14,6 +14,7 @@ import { COLORS, EMBED_FIELDS } from "../util/config";
 @Discord()
 export class Framedata {
   static readonly zeroWidthSpace: string = "​";
+  static readonly BASE_API_URL?: string = process.env.BASE_API_URL;
 
   @Slash({
     description: `Look up framedata for a given TEKKEN 7 attack.`,
@@ -237,7 +238,7 @@ export class Framedata {
   static async getCharacterCodeResponse(character: string) {
     try {
       return await fetch(
-        `http://localhost:3000/character-code/${character.toLowerCase()}`
+        `${this.BASE_API_URL}character-code/${character.toLowerCase()}`
       );
     } catch (err) {
       console.error(`An error ocurred when fetching character code: ${err}`);
@@ -251,7 +252,7 @@ export class Framedata {
     inputs: string
   ) {
     try {
-      return await fetch(`http://localhost:3000/framedata`, {
+      return await fetch(`${this.BASE_API_URL}framedata`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
