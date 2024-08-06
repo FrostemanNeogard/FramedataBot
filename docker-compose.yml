@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  node-app:
+    build: .
+    volumes:
+      - /usr/src/app
+    ports:
+      - "3000:3000"
+    command: npm run dev
