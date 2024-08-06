@@ -1,8 +1,14 @@
 version: "3.8"
 
 services:
-  node-app:
+  bot:
     build: .
     volumes:
       - /usr/src/app
     command: npm run dev
+    networks:
+      - framedata_network
+
+networks:
+  framedata_network:
+    external: true
