@@ -6,6 +6,7 @@ services:
     command: npm run dev
     networks:
       - framedata_network
+    restart: always
 
 networks:
   framedata_network:
