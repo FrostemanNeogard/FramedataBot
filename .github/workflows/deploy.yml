@@ -21,8 +21,8 @@ jobs:
       - name: Deploy Bot
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd /Desktop/Repos/TekkenFramedataBot
-            git pull
-            docker compose -f docker-compose.yml down
+            cd ~/project/TekkenFramedataBot &&
+            git pull &&
+            docker compose -f docker-compose.yml down &&
             docker compose -f docker-compose.yml up --build -d
           EOF
