@@ -146,8 +146,7 @@ export class Framedata {
         .setTitle(`Attack not found: ${inputs}`)
         .setFields({
           name: "Similar moves:",
-          value:
-            similarMoveNames.length != 0 ? similarMoveNames : "None found.",
+          value: similarMoveNames.length > 0 ? similarMoveNames : "None found.",
         })
         .setColor(COLORS.warning);
       console.log(`Sending "Similar Moves" embed for ${character}'s ${inputs}`);
