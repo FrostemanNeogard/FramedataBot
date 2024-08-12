@@ -2,7 +2,6 @@ import "dotenv/config";
 import { Events, IntentsBitField, Interaction } from "discord.js";
 import { Client } from "discordx";
 import { dirname, importx } from "@discordx/importer";
-import { time } from "console";
 
 const { TOKEN, DEV, TEST_GUILD_ID } = process.env;
 
