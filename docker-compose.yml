@@ -1,0 +1,13 @@
+services:
+  bot:
+    build: .
+    volumes:
+      - /usr/src/app
+    command: npm run dev
+    networks:
+      - framedata_network
+    restart: always
+
+networks:
+  framedata_network:
+    external: true
