@@ -3,6 +3,8 @@ import {
   AttachmentBuilder,
   CommandInteraction,
   EmbedBuilder,
+  SlashCommandBuilder,
+  SlashCommandStringOption,
 } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
 import "dotenv/config";
@@ -11,28 +13,34 @@ import * as path from "path";
 import { DiscordEmbedResponse } from "../types/responses";
 import { COLORS, EMBED_FIELDS } from "../util/config";
 
+const fd7Command = new SlashCommandBuilder()
+  .setName("fd7")
+  .setDescription("Look up framedata for a given TEKKEN 7 attack");
+
+const fd8Command = new SlashCommandBuilder()
+  .setName("fd8")
+  .setDescription("Look up framedata for a given TEKKEN 8 attack");
+
+const fdCommandCharacterOption = new SlashCommandStringOption()
+  .setName("character")
+  .setDescription("Character")
+  .setRequired(true);
+
+const fdCommandAttackOption = new SlashCommandStringOption()
+  .setName("move")
+  .setDescription("Attack")
+  .setRequired(true);
+
 @Discord()
 export class Framedata {
   static readonly zeroWidthSpace: string = "​";
   static readonly BASE_API_URL?: string = process.env.BASE_API_URL;
 
-  @Slash({
-    description: `Look up framedata for a given TEKKEN 7 attack.`,
-  })
+  @Slash(fd7Command)
   fd7(
-    @SlashOption({
-      name: `character`,
-      description: `Character`,
-      required: true,
-      type: ApplicationCommandOptionType.String,
-    })
+    @SlashOption(fdCommandCharacterOption)
     character: string,
-    @SlashOption({
-      name: `move`,
-      description: `Attack`,
-      required: true,
-      type: ApplicationCommandOptionType.String,
-    })
+    @SlashOption(fdCommandAttackOption)
     input: string,
     interaction: CommandInteraction
   ): void {
@@ -41,23 +49,11 @@ export class Framedata {
     );
   }
 
-  @Slash({
-    description: `Look up framedata for a given TEKKEN 8 attack.`,
-  })
+  @Slash(fd8Command)
   fd8(
-    @SlashOption({
-      name: `character`,
-      description: `Character`,
-      required: true,
-      type: ApplicationCommandOptionType.String,
-    })
+    @SlashOption(fdCommandCharacterOption)
     character: string,
-    @SlashOption({
-      name: `move`,
-      description: `Attack`,
-      required: true,
-      type: ApplicationCommandOptionType.String,
-    })
+    @SlashOption(fdCommandAttackOption)
     input: string,
     interaction: CommandInteraction
   ): void {
