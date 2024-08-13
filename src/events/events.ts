@@ -30,8 +30,8 @@ export class EventListener {
         message.guild?.name
       }" \n\b at: ${new Date().toLocaleDateString()}\n`
     );
-    // Framedata.getFramedataEmbed(character, inputs, "tekken8").then((response) =>
-    //   message.reply(response)
-    // );
+    Framedata.getFramedataEmbed(character, inputs, "tekken8").then((response) =>
+      message.reply(response)
+    );
   }
 }
