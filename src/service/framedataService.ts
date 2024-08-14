@@ -160,7 +160,10 @@ export class FramedataService {
     }
 
     let imageFiles = [];
-    const imageFilePath = path.join(__dirname, `./images/${characterCode}.png`);
+    const imageFilePath = path.join(
+      __dirname,
+      `../images/${characterCode}.png`
+    );
     const fileExists = existsSync(imageFilePath);
     if (fileExists) {
       console.log(`Found image for character ${character}.`);
