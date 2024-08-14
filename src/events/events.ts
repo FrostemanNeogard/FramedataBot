@@ -1,6 +1,6 @@
 import { ArgsOf, Discord, On } from "discordx";
 import "dotenv/config";
-import { Framedata } from "../commands/framedata";
+import { FramedataService } from "../service/framedataService";
 const { CLIENT_ID } = process.env;
 
 @Discord()
@@ -30,8 +30,8 @@ export class EventListener {
         message.guild?.name
       }" \n\b at: ${new Date().toLocaleDateString()}\n`
     );
-    Framedata.getFramedataEmbed(character, inputs, "tekken8").then((response) =>
-      message.reply(response)
+    FramedataService.getFramedataEmbed(character, inputs, "tekken8").then(
+      (response) => message.reply(response)
     );
   }
 }
