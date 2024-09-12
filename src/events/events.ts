@@ -1,6 +1,7 @@
-import { ArgsOf, Discord, On } from "discordx";
+import { ArgsOf, Client, Discord, On, Once } from "discordx";
 import "dotenv/config";
 import { FramedataService } from "../service/framedataService";
+import { Events } from "discord.js";
 const { CLIENT_ID } = process.env;
 
 @Discord()
@@ -11,8 +12,29 @@ export class EventListener {
     this.framedataService = new FramedataService();
   }
 
+  @On({ event: Events.InteractionCreate })
+  onInteractionCreate(
+    [interaction]: ArgsOf<Events.InteractionCreate>,
+    client: Client
+  ) {
+    console.log(
+      `\nCommand: "${interaction.toString()}"\n\b was run by: "${
+        interaction.user.globalName
+      }" \n\b in channel: "${interaction.channelId}" \n\b in server: "${
+        interaction.guild?.name
+      }" \n\b at: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`
+    );
+    client.executeInteraction(interaction);
+  }
+
+  @Once({ event: Events.ClientReady })
+  async onReady([_args]: ArgsOf<Events.ClientReady>, client: Client) {
+    await client.initApplicationCommands();
+    console.log(`Commands have been updated for ${client.user?.username}.`);
+  }
+
   @On({
-    event: "messageCreate",
+    event: Events.MessageCreate,
   })
   onMessage([message]: ArgsOf<"messageCreate">) {
     if (!message.content.startsWith(`<@${CLIENT_ID}>`)) return;
@@ -34,7 +56,7 @@ export class EventListener {
         message.member?.displayName
       }" \n\b in channel: "${message.guildId}" \n\b in server: "${
         message.guild?.name
-      }" \n\b at: ${new Date().toLocaleDateString()}\n`
+      }" \n\b at: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`
     );
     this.framedataService
       .getFramedataEmbed(character, inputs, "tekken8")
