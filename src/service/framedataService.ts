@@ -175,7 +175,11 @@ export class FramedataService {
       imageFiles.push(imageFile);
     }
 
-    console.log(`Sending response for ${character}'s ${inputString}`);
+    console.log(
+      `Sending response for ${character}'s ${inputString} with image(s): ${imageFiles.map(
+        (i) => i.name
+      )}`
+    );
     return { embeds: [responseEmbed], files: imageFiles };
   }
 
