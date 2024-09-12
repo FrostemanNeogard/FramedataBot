@@ -5,6 +5,12 @@ const { CLIENT_ID } = process.env;
 
 @Discord()
 export class EventListener {
+  private readonly framedataService: FramedataService;
+
+  constructor() {
+    this.framedataService = new FramedataService();
+  }
+
   @On({
     event: "messageCreate",
   })
@@ -30,8 +36,8 @@ export class EventListener {
         message.guild?.name
       }" \n\b at: ${new Date().toLocaleDateString()}\n`
     );
-    FramedataService.getFramedataEmbed(character, inputs, "tekken8").then(
-      (response) => message.reply(response)
-    );
+    this.framedataService
+      .getFramedataEmbed(character, inputs, "tekken8")
+      .then((response) => message.reply(response));
   }
 }
