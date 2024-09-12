@@ -4,7 +4,7 @@
     "axios": "^1.6.5",
     "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.14.1",
-    "discordx": "^11.12.1",
+    "discordx": "^11.12.0",
     "dotenv": "^16.0.0",
     "needle": "^3.3.1",
     "node-fetch": "^3.3.2"
