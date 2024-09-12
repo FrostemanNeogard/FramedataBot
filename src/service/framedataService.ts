@@ -5,16 +5,17 @@ import { existsSync } from "fs";
 import * as path from "path";
 
 export class FramedataService {
-  static readonly zeroWidthSpace: string = "​";
-  static readonly BASE_API_URL?: string = process.env.BASE_API_URL;
+  private readonly zeroWidthSpace: string = "​";
+  private readonly BASE_API_URL?: string = process.env.BASE_API_URL;
 
-  static async getFramedataEmbed(
+  async getFramedataEmbed(
     character: string,
     inputs: string,
     gameCode: string
   ): Promise<DiscordEmbedResponse> {
-    const characterCodeResponse =
-      await FramedataService.getCharacterCodeResponse(character);
+    const characterCodeResponse = await this.getCharacterCodeResponse(
+      character
+    );
 
     if (characterCodeResponse == null) {
       const errorEmbed = new EmbedBuilder()
@@ -46,7 +47,7 @@ export class FramedataService {
 
     const characterCode = characterCodeData.characterCode;
 
-    const response = await FramedataService.getFramedataResponse(
+    const response = await this.getFramedataResponse(
       characterCode,
       gameCode,
       inputs
@@ -178,7 +179,7 @@ export class FramedataService {
     return { embeds: [responseEmbed], files: imageFiles };
   }
 
-  static async getCharacterCodeResponse(character: string) {
+  private async getCharacterCodeResponse(character: string) {
     try {
       return await fetch(
         `${this.BASE_API_URL}character-code/${character.toLowerCase()}`
@@ -189,7 +190,7 @@ export class FramedataService {
     }
   }
 
-  static async getFramedataResponse(
+  private async getFramedataResponse(
     characterCode: any,
     gameCode: string,
     inputs: string
@@ -210,7 +211,7 @@ export class FramedataService {
     }
   }
 
-  static validateEmbedFieldValue(input: string): string {
+  private validateEmbedFieldValue(input: string): string {
     if (!input || input.length <= 0) {
       return this.zeroWidthSpace;
     }

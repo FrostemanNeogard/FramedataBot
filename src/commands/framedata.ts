@@ -26,6 +26,12 @@ const fdCommandAttackOption = new SlashCommandStringOption()
 
 @Discord()
 export class Framedata {
+  private readonly framedataService: FramedataService;
+
+  constructor() {
+    this.framedataService = new FramedataService();
+  }
+
   @Slash(fd7Command)
   fd7(
     @SlashOption(fdCommandCharacterOption)
@@ -34,9 +40,9 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    FramedataService.getFramedataEmbed(character, input, "tekken7").then(
-      (response) => interaction.reply(response)
-    );
+    this.framedataService
+      .getFramedataEmbed(character, input, "tekken7")
+      .then((response) => interaction.reply(response));
   }
 
   @Slash(fd8Command)
@@ -47,8 +53,8 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    FramedataService.getFramedataEmbed(character, input, "tekken8").then(
-      (response) => interaction.reply(response)
-    );
+    this.framedataService
+      .getFramedataEmbed(character, input, "tekken8")
+      .then((response) => interaction.reply(response));
   }
 }
