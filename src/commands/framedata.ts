@@ -40,9 +40,13 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    this.framedataService
-      .getFramedataEmbed(character, input, "tekken7")
-      .then((response) => interaction.reply(response));
+    try {
+      this.framedataService
+        .getFramedataEmbed(character, input, "tekken7")
+        .then((response) => interaction.reply(response));
+    } catch (e) {
+      console.log("An error ocurred when attempting to execute t7 command:", e);
+    }
   }
 
   @Slash(fd8Command)
@@ -53,8 +57,12 @@ export class Framedata {
     input: string,
     interaction: CommandInteraction
   ): void {
-    this.framedataService
-      .getFramedataEmbed(character, input, "tekken8")
-      .then((response) => interaction.reply(response));
+    try {
+      this.framedataService
+        .getFramedataEmbed(character, input, "tekken8")
+        .then((response) => interaction.reply(response));
+    } catch (e) {
+      console.log("An error ocurred when attempting to execute t8 command:", e);
+    }
   }
 }

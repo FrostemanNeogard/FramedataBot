@@ -24,7 +24,14 @@ export class EventListener {
         interaction.guild?.name
       }" \n\b at: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`
     );
-    client.executeInteraction(interaction);
+    try {
+      client.executeInteraction(interaction);
+    } catch (e) {
+      console.log(
+        "An error ocurred when attempting to execute an interaction:",
+        e
+      );
+    }
   }
 
   @Once({ event: Events.ClientReady })
@@ -58,8 +65,16 @@ export class EventListener {
         message.guild?.name
       }" \n\b at: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`
     );
-    this.framedataService
-      .getFramedataEmbed(character, inputs, "tekken8")
-      .then((response) => message.reply(response));
+
+    try {
+      this.framedataService
+        .getFramedataEmbed(character, inputs, "tekken8")
+        .then((response) => message.reply(response));
+    } catch (e) {
+      console.log(
+        "An error ocurred when attempting to execute 'fd8' shortcut:",
+        e
+      );
+    }
   }
 }
