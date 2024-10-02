@@ -163,7 +163,7 @@ export class FramedataService {
     let imageFiles = [];
     const imageFilePath = path.join(
       __dirname,
-      `../images/${characterCode}.png`
+      `../images/${gameCode}/${characterCode}.png`
     );
     const fileExists = existsSync(imageFilePath);
     if (fileExists) {
