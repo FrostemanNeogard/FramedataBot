@@ -7,7 +7,8 @@ export const COLORS = {
 };
 
 export const EMBED_FIELDS = {
-  footer: "Please use the report command to submit any feedback you may have.",
+  footer:
+    'Please use the "/report" command to submit any feedback you may have.',
 };
 
 export const getDefaultEmbed = () =>
