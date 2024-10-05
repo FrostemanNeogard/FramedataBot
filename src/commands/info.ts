@@ -53,6 +53,7 @@ export class Info {
     interaction: CommandInteraction
   ) {
     try {
+      await interaction.deferReply();
       const feedbackReciever = await interaction.guild?.members.fetch(
         OWNER_ID ?? ""
       );
@@ -67,7 +68,7 @@ export class Info {
         .setTitle("SUCCESS!")
         .setDescription("Your feedback has been sent, thank you!")
         .setFooter(null);
-      interaction.reply({ embeds: [successEmbed] });
+      interaction.editReply({ embeds: [successEmbed] });
     } catch (err) {
       console.error(
         err instanceof Error
@@ -79,7 +80,7 @@ export class Info {
         .setTitle("ERROR.")
         .setColor(COLORS.danger)
         .setDescription("An error ocurred. Please try again later.");
-      interaction.reply({ embeds: [errorEmbed] });
+      interaction.editReply({ embeds: [errorEmbed] });
     }
   }
 

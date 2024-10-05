@@ -33,34 +33,42 @@ export class Framedata {
   }
 
   @Slash(fd7Command)
-  fd7(
+  async fd7(
     @SlashOption(fdCommandCharacterOption)
     character: string,
     @SlashOption(fdCommandAttackOption)
     input: string,
     interaction: CommandInteraction
-  ): void {
+  ): Promise<void> {
     try {
-      this.framedataService
-        .getFramedataEmbed(character, input, "tekken7")
-        .then((response) => interaction.reply(response));
+      await interaction.deferReply();
+      const response = await this.framedataService.getFramedataEmbed(
+        character,
+        input,
+        "tekken7"
+      );
+      interaction.editReply(response);
     } catch (e) {
       console.log("An error ocurred when attempting to execute t7 command:", e);
     }
   }
 
   @Slash(fd8Command)
-  fd8(
+  async fd8(
     @SlashOption(fdCommandCharacterOption)
     character: string,
     @SlashOption(fdCommandAttackOption)
     input: string,
     interaction: CommandInteraction
-  ): void {
+  ): Promise<void> {
     try {
-      this.framedataService
-        .getFramedataEmbed(character, input, "tekken8")
-        .then((response) => interaction.reply(response));
+      await interaction.deferReply();
+      const response = await this.framedataService.getFramedataEmbed(
+        character,
+        input,
+        "tekken8"
+      );
+      interaction.editReply(response);
     } catch (e) {
       console.log("An error ocurred when attempting to execute t8 command:", e);
     }
