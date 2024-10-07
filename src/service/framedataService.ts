@@ -182,14 +182,12 @@ export class FramedataService {
   }
 
   private async getCharacterCodeResponse(gameCode: string, character: string) {
-    const apiEndpoint = `${
-      this.BASE_API_URL
-    }charactercodes/${gameCode}/${character.toLowerCase()}`;
-
-    console.log(`Fetching ${apiEndpoint} for getting character endpoint.`);
-
     try {
-      return await fetch(apiEndpoint);
+      return await fetch(
+        `${
+          this.BASE_API_URL
+        }charactercodes/${gameCode}/${character.toLowerCase()}`
+      );
     } catch (err) {
       console.error(`An error ocurred when fetching character code: ${err}`);
       return null;
