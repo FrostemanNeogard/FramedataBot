@@ -23,6 +23,10 @@ jobs:
           ssh -o StrictHostKeyChecking=no -p 2222 ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
             cd ~/projects/FramedataBot &&
             git pull &&
+            export TOKEN=${{ secrets.TOKEN }} &&
+            export CLIENT_ID=${{ secrets.CLIENT_ID }} &&
+            export OWNER_ID=${{ secrets.OWNER_ID }} &&
+            export BASE_API_URL=${{ secrets.BASE_API_URL }} &&
             sudo docker-compose -f docker-compose.yml down &&
             sudo docker-compose -f docker-compose.yml up --build -d
           "
