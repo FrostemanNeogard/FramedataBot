@@ -14,6 +14,7 @@ export class FramedataService {
     gameCode: string
   ): Promise<DiscordEmbedResponse> {
     const characterCodeResponse = await this.getCharacterCodeResponse(
+      gameCode,
       character
     );
 
@@ -24,7 +25,7 @@ export class FramedataService {
           "An error ocurred when attempting to fetch framedata. Please try again later."
         )
         .setColor(COLORS.danger);
-      console.log(`Couldn't fetch API at all.`);
+      console.log(`Couldn't fetch API.`);
       return {
         embeds: [errorEmbed],
       };
@@ -32,16 +33,13 @@ export class FramedataService {
 
     const characterCodeData = await characterCodeResponse.json();
 
-    if (characterCodeData.status === 400) {
-      const errorMessage = characterCodeData.message.replaceAll(
-        "BadRequestException: ",
-        ""
-      );
-      console.error(`Error: ${errorMessage}`);
+    if (characterCodeData.statusCode == 404) {
       const errorEmbed = new EmbedBuilder()
         .setTitle("ERROR")
-        .setDescription("An error has ocurred");
-      console.log(`An API related error ocurred: ${errorMessage}`);
+        .setDescription(
+          `Couldn't find the character "${character}" for the given game.`
+        )
+        .setColor(COLORS.danger);
       return { embeds: [errorEmbed] };
     }
 
@@ -116,7 +114,7 @@ export class FramedataService {
     const inputString = name ? `${input} (${name})` : input;
 
     const responseEmbed = new EmbedBuilder()
-      .setTitle(character.toUpperCase())
+      .setTitle(characterCode.toUpperCase())
       .setDescription(inputString)
       .setColor(COLORS.success)
       .setFooter({ text: EMBED_FIELDS.footer })
@@ -183,10 +181,12 @@ export class FramedataService {
     return { embeds: [responseEmbed], files: imageFiles };
   }
 
-  private async getCharacterCodeResponse(character: string) {
+  private async getCharacterCodeResponse(gameCode: string, character: string) {
     try {
       return await fetch(
-        `${this.BASE_API_URL}character-code/${character.toLowerCase()}`
+        `${
+          this.BASE_API_URL
+        }charactercodes/${gameCode}/${character.toLowerCase()}`
       );
     } catch (err) {
       console.error(`An error ocurred when fetching character code: ${err}`);
