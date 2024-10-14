@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
 import { COLORS, getDefaultEmbed } from "../util/config";
 import "dotenv/config";
-const { OWNER_ID } = process.env;
+const { OWNER_ID, TEST_GUILD_ID } = process.env;
 
 @Discord()
 export class Info {
@@ -54,12 +54,18 @@ export class Info {
   ) {
     try {
       await interaction.deferReply();
-      const feedbackReciever = await interaction.guild?.members.fetch(
-        OWNER_ID ?? ""
+      const devServer = await interaction.client.guilds.cache.get(
+        TEST_GUILD_ID ?? ""
       );
-      if (!feedbackReciever) {
-        throw new Error("Couldn't get owner.");
+      if (!devServer) {
+        throw new Error("Couldn't get server data.");
       }
+
+      const feedbackReciever = await devServer.members.fetch(OWNER_ID ?? "");
+      if (!feedbackReciever) {
+        throw new Error("Couldn't get owner data.");
+      }
+
       feedbackReciever.send(
         `Feedback recieved by ${interaction.user}: ${message}`
       );
