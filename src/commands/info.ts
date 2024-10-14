@@ -33,7 +33,7 @@ export class Info {
         },
         {
           name: "/support",
-          value: "View how to support me as the creator of this bot :)",
+          value: "View how to support me as the creator of this bot.",
         }
       );
     interaction.reply({ embeds: [helpEmbed] });
