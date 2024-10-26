@@ -66,20 +66,20 @@ export class FramedataService {
 
     const data = await response.json();
 
-    if (data.status == 400) {
+    if (response.status == 400) {
       const errorEmbed = new EmbedBuilder()
         .setTitle("ERROR")
-        .setDescription(data.message.replaceAll("BadRequestException: ", ""))
+        .setDescription(data.message)
         .setColor(COLORS.danger);
-      console.log(`An API related error ocurred: ${data.message}`);
+      console.log(`An API error ocurred: ${data.message}`);
       return {
         embeds: [errorEmbed],
       };
     }
 
-    if (data.length > 0) {
+    if (response.status == 404) {
       const similarMoveNames =
-        data
+        data.similar_moves
           .map(
             (move: { [key: string]: any }, index: number) =>
               `**${index + 1}:** ${move.input}`
@@ -108,10 +108,10 @@ export class FramedataService {
       block,
       hit,
       counter,
-      note,
-    } = data;
+      notes,
+    } = data[0];
 
-    const inputString = name ? `${input} (${name})` : input;
+    const inputString = name?.length > 0 ? `${input} (${name})` : input;
 
     const responseEmbed = new EmbedBuilder()
       .setTitle(characterCode.toUpperCase())
@@ -147,13 +147,11 @@ export class FramedataService {
         }
       );
 
-    if (note.length > 0) {
-      console.log(`Adding ${note.length} notes`);
+    if (notes.length > 0) {
+      console.log(`Adding ${notes.length} notes`);
       responseEmbed.addFields({
         name: "Notes",
-        value: this.validateEmbedFieldValue(
-          `- ${note.split("\n").join("\n- ")}`
-        ),
+        value: this.validateEmbedFieldValue(`- ${notes.join("\n- ")}`),
         inline: true,
       });
     }
