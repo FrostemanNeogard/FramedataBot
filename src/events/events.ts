@@ -43,7 +43,7 @@ export class EventListener {
   @On({
     event: Events.MessageCreate,
   })
-  onMessage([message]: ArgsOf<"messageCreate">) {
+  onMessage([message]: ArgsOf<"messageCreate">, client: Client) {
     if (!message.content.startsWith(`<@${CLIENT_ID}>`)) return;
     const args = message.content.split(" ");
     while (args.includes("")) {
@@ -65,6 +65,16 @@ export class EventListener {
         message.guild?.name
       }" \n\b at: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`
     );
+
+    if (
+      !client.guilds.cache
+        .get(message.guildId ?? "")
+        ?.members.me?.permissionsIn(message.channelId)
+        .has("SendMessages")
+    ) {
+      console.log("Missing permissions to send message, aborting");
+      return;
+    }
 
     try {
       this.framedataService
