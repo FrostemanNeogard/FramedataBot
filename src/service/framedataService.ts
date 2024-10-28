@@ -3,6 +3,7 @@ import { COLORS, EMBED_FIELDS } from "../util/config";
 import { DiscordEmbedResponse } from "../types/responses";
 import { existsSync } from "fs";
 import * as path from "path";
+import { MoveNotFoundError } from "../exceptions/similarMoves";
 
 export class FramedataService {
   private readonly zeroWidthSpace: string = "​";
@@ -94,9 +95,7 @@ export class FramedataService {
         })
         .setColor(COLORS.warning);
       console.log(`Sending "Similar Moves" embed for ${character}'s ${inputs}`);
-      return {
-        embeds: [warningEmbed],
-      };
+      throw new MoveNotFoundError(warningEmbed, data.similar_moves);
     }
 
     const {
