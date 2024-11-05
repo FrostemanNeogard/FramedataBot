@@ -90,8 +90,6 @@ export class Framedata {
     e: MoveNotFoundError,
     interaction: CommandInteraction<CacheType>
   ) {
-    console.log("All data available", e.getSimilarMoves()[0]);
-
     const similarMovesEmbed = e.getEmbed();
     const similarMoves = e.getSimilarMoves();
 
