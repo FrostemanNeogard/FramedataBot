@@ -1,4 +1,9 @@
-import { ReactionCollectorOptions, Message } from "discord.js";
+import {
+  Message,
+  ActionRowBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+} from "discord.js";
 import { MoveNotFoundError } from "../exceptions/similarMoves";
 import { FramedataService } from "../service/framedataService";
 
@@ -25,29 +30,39 @@ export async function handleSimilarMovesNonInteraction(
   const similarMovesEmbed = e.getEmbed();
   const similarMoves = e.getSimilarMoves();
 
-  const sentMessage = await message.reply({
+  const select = new StringSelectMenuBuilder()
+    .setCustomId("suggested")
+    .setPlaceholder("Make a selection");
+
+  for (let i = 0; i < similarMoves.length; i++) {
+    select.addOptions(
+      new StringSelectMenuOptionBuilder()
+        .setLabel((i + 1).toString())
+        .setValue((i + 1).toString())
+    );
+  }
+  const row: any = new ActionRowBuilder().addComponents(select);
+
+  const response = await message.reply({
     embeds: [similarMovesEmbed],
+    components: [row],
   });
 
-  const reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
-  for (let i = 0; i < similarMoves.length; i++) {
-    sentMessage.react(reactions[i]);
-  }
+  const collectorFilter = (i: any) => i.user.id == message.author.id;
 
-  const filter: ReactionCollectorOptions = {
-    filter: (reaction: any) => {
-      return false;
-      // return (
-      //   reactions.includes(reaction.emoji.name) &&
-      //   user.id === interaction.user.id
-      // );
-    },
-  };
+  try {
+    const confirmation: any = await response.awaitMessageComponent({
+      filter: collectorFilter,
+      time: 60_000,
+    });
+    const selectedValue = confirmation.values[0];
 
-  const collector = sentMessage.createReactionCollector(filter);
+    if (selectedValue < 1 || selectedValue > similarMoves.length) {
+      confirmation.update({ content: "Invalid selection.", components: [] });
+      return;
+    }
 
-  setTimeout(async () => {
-    const attackData = e.getSimilarMoves()[0];
+    const attackData = similarMoves[selectedValue - 1];
     console.log("Attackdata", attackData);
 
     const thumbnailImage = await framedataService.getCharacterThumbnail(
@@ -60,23 +75,15 @@ export async function handleSimilarMovesNonInteraction(
       thumbnailImage
     );
 
-    const postSelectionEmbed = similarMovesEmbed;
-    postSelectionEmbed.setFooter({
-      text: "A selection has already been made.",
-    });
-    sentMessage.edit({ embeds: [postSelectionEmbed] });
-
-    if (!thumbnailImage) {
-      sentMessage.reply({
-        embeds: [responseEmbed],
-      });
-      return;
-    }
-
-    sentMessage.reply({
+    await confirmation.update({
       embeds: [responseEmbed],
       files: [thumbnailImage],
+      components: [],
     });
-    return;
-  }, 2000);
+  } catch {
+    const timeUpEmbed = similarMovesEmbed.setFooter({
+      text: `No decision was made by the time this expired.`,
+    });
+    await response.edit({ embeds: [timeUpEmbed], components: [] });
+  }
 }
