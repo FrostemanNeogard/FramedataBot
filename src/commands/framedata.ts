@@ -1,5 +1,7 @@
 import {
+  CacheType,
   CommandInteraction,
+  ReactionCollectorOptions,
   SlashCommandBuilder,
   SlashCommandStringOption,
   User,
@@ -51,7 +53,11 @@ export class Framedata {
       );
       interaction.editReply(response);
     } catch (e) {
-      console.log("An error ocurred when attempting to execute t7 command:", e);
+      if (e instanceof MoveNotFoundError) {
+        this.handleSimilarMoves(e, interaction);
+      } else {
+        console.log("An unknown error ocurred:", e);
+      }
     }
   }
 
@@ -73,61 +79,74 @@ export class Framedata {
       interaction.editReply(response);
     } catch (e) {
       if (e instanceof MoveNotFoundError) {
-        console.log("STart of thing here");
-        const similarMovesEmbed = e.getEmbed();
-        const similarMoves = e.getSimilarMoves();
-
-        interaction.editReply({ embeds: [similarMovesEmbed] });
-        const message = await interaction.fetchReply();
-
-        const reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
-        for (let i = 0; i < similarMoves.length; i++) {
-          message.react(reactions[i]);
-        }
-
-        const collectorFilter = (reaction: any, user: User) => {
-          return (
-            reactions.includes(reaction.emoji.name) &&
-            user.id === interaction.user.id
-          );
-        };
-
-        message
-          .awaitReactions({
-            filter: collectorFilter,
-            max: 1,
-            time: 120_000,
-            errors: ["time"],
-          })
-          .then((collectedReactions) => {
-            const reaction = collectedReactions.first();
-
-            if (reaction?.emoji.name == "1️⃣") {
-              console.log("One!!!!");
-              interaction.editReply("Test");
-            } else {
-              console.log("Idk what happened", reaction?.emoji.name);
-              interaction.editReply("Oh no");
-            }
-          })
-          .catch((collectedReactions) => {
-            interaction.reply("Something went wrong. Please try again.");
-            console.log(
-              `Something went wrong when reacting with a ${
-                collectedReactions.first()?.emoji.name
-              }`
-            );
-          });
-
-        // switch (collectedReactions.first()?.emoji.name) {
-        //   case reactions[0]:
-        //     interaction.editReply("Test thing");
-        //     break;
-        //   default:
-        //     message.reply("You reacted with an invalid emoji.");
-        //     break;
-        // }
+        this.handleSimilarMoves(e, interaction);
+      } else {
+        console.log("An unknown error ocurred:", e);
       }
     }
+  }
+
+  private async handleSimilarMoves(
+    e: MoveNotFoundError,
+    interaction: CommandInteraction<CacheType>
+  ) {
+    console.log("All data available", e.getSimilarMoves()[0]);
+
+    const similarMovesEmbed = e.getEmbed();
+    const similarMoves = e.getSimilarMoves();
+
+    interaction.editReply({ embeds: [similarMovesEmbed] });
+    const message = await interaction.fetchReply();
+
+    const reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
+    for (let i = 0; i < similarMoves.length; i++) {
+      message.react(reactions[i]);
+    }
+
+    const filter: ReactionCollectorOptions = {
+      filter: (reaction: any) => {
+        return false;
+        // return (
+        //   reactions.includes(reaction.emoji.name) &&
+        //   user.id === interaction.user.id
+        // );
+      },
+    };
+
+    const collector = message.createReactionCollector(filter);
+
+    setTimeout(async () => {
+      const attackData = e.getSimilarMoves()[0];
+      console.log("Attackdata", attackData);
+
+      const thumbnailImage = await this.framedataService.getCharacterThumbnail(
+        e.getCharacterCode(),
+        e.getGameCode()
+      );
+      const responseEmbed = this.framedataService.createFramedataEmbed(
+        attackData,
+        e.getCharacterCode(),
+        thumbnailImage
+      );
+
+      const postSelectionEmbed = similarMovesEmbed;
+      postSelectionEmbed.setFooter({
+        text: "A selection has already been made.",
+      });
+      interaction.editReply({ embeds: [postSelectionEmbed] });
+
+      if (!thumbnailImage) {
+        interaction.followUp({
+          embeds: [responseEmbed],
+        });
+        return;
+      }
+
+      interaction.followUp({
+        embeds: [responseEmbed],
+        files: [thumbnailImage],
+      });
+      return;
+    }, 2000);
   }
 }
