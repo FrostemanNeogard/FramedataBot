@@ -4,6 +4,7 @@ import { DiscordEmbedResponse } from "../types/responses";
 import { existsSync } from "fs";
 import * as path from "path";
 import { MoveNotFoundError } from "../exceptions/similarMoves";
+import { TekkenAttackData } from "../types/framedata";
 
 export class FramedataService {
   private readonly zeroWidthSpace: string = "​";
@@ -112,9 +113,45 @@ export class FramedataService {
 
     const inputString = name?.length > 0 ? `${input} (${name})` : input;
 
+    const characterThumbnail = await this.getCharacterThumbnail(
+      characterCode,
+      gameCode
+    );
+
+    var responseEmbed = this.createFramedataEmbed(
+      {
+        input: inputString,
+        name,
+        hit_level,
+        damage,
+        startup,
+        block,
+        hit,
+        counter,
+        notes,
+      },
+      character,
+      characterThumbnail
+    );
+
+    if (!characterThumbnail) {
+      return { embeds: [responseEmbed] };
+    }
+
+    return { embeds: [responseEmbed], files: [characterThumbnail] };
+  }
+
+  public createFramedataEmbed(
+    attackData: TekkenAttackData,
+    characterName: string,
+    thumbnailImage: AttachmentBuilder | null
+  ) {
+    const { input, hit_level, damage, startup, block, hit, counter, notes } =
+      attackData;
+
     const responseEmbed = new EmbedBuilder()
-      .setTitle(characterCode.toUpperCase())
-      .setDescription(inputString)
+      .setTitle(characterName)
+      .setDescription(input)
       .setColor(COLORS.success)
       .setFooter({ text: EMBED_FIELDS.footer })
       .setFields(
@@ -146,6 +183,12 @@ export class FramedataService {
         }
       );
 
+    if (!!thumbnailImage) {
+      responseEmbed.setThumbnail(
+        encodeURI(`attachment://${thumbnailImage.name}`)
+      );
+    }
+
     if (notes.length > 0) {
       console.log(`Adding ${notes.length} notes`);
       responseEmbed.addFields({
@@ -155,27 +198,23 @@ export class FramedataService {
       });
     }
 
-    let imageFiles = [];
+    return responseEmbed;
+  }
+
+  public async getCharacterThumbnail(characterCode: string, gameCode: string) {
     const imageFilePath = path.join(
       __dirname,
       `../images/${gameCode}/${characterCode}.png`
     );
     const fileExists = existsSync(imageFilePath);
     if (fileExists) {
-      console.log(`Found image for character ${character}.`);
-      const imageFile = new AttachmentBuilder(imageFilePath, {
+      console.log(`Found image for character ${characterCode}.`);
+      return new AttachmentBuilder(imageFilePath, {
         name: `${characterCode}.png`,
       });
-      responseEmbed.setThumbnail(encodeURI(`attachment://${imageFile.name}`));
-      imageFiles.push(imageFile);
     }
 
-    console.log(
-      `Sending response for ${character}'s ${inputString} with image(s): ${imageFiles.map(
-        (i) => i.name
-      )}`
-    );
-    return { embeds: [responseEmbed], files: imageFiles };
+    return null;
   }
 
   private async getCharacterCodeResponse(gameCode: string, character: string) {
