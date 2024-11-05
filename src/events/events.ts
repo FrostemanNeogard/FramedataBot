@@ -2,7 +2,11 @@ import { ArgsOf, Client, Discord, On, Once } from "discordx";
 import "dotenv/config";
 import { FramedataService } from "../service/framedataService";
 import { Events } from "discord.js";
-import { logCommandUsage } from "../util/helper";
+import {
+  handleSimilarMovesNonInteraction,
+  logCommandUsage,
+} from "../util/helper";
+import { MoveNotFoundError } from "../exceptions/similarMoves";
 const { CLIENT_ID } = process.env;
 
 @Discord()
@@ -43,7 +47,7 @@ export class EventListener {
   @On({
     event: Events.MessageCreate,
   })
-  onMessage([message]: ArgsOf<"messageCreate">, client: Client) {
+  async onMessage([message]: ArgsOf<"messageCreate">, client: Client) {
     if (!message.content.startsWith(`<@${CLIENT_ID}>`)) return;
     const args = message.content.split(" ");
     while (args.includes("")) {
@@ -76,14 +80,22 @@ export class EventListener {
     }
 
     try {
-      this.framedataService
-        .getFramedataEmbed(character, inputs, "tekken8")
-        .then((response) => message.reply(response));
-    } catch (e) {
-      console.log(
-        "An error ocurred when attempting to execute 'fd8' shortcut:",
-        e
+      const responseEmbed = await this.framedataService.getFramedataEmbed(
+        character,
+        inputs,
+        "tekken8"
       );
+      message.reply(responseEmbed);
+    } catch (e) {
+      if (e instanceof MoveNotFoundError) {
+        console.log("Caught movenotfound error!!!!!!");
+        handleSimilarMovesNonInteraction(e, message);
+      } else {
+        console.log(
+          "An unknown error ocurred when attempting to execute 'fd8' shortcut:",
+          e
+        );
+      }
     }
   }
 }
