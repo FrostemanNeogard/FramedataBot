@@ -25,8 +25,9 @@ export async function handleSimilarMovesNonInteraction(
   const similarMovesEmbed = e.getEmbed();
   const similarMoves = e.getSimilarMoves();
 
-  message.edit({ embeds: [similarMovesEmbed] });
-  const sentMessage = await message.fetch();
+  const sentMessage = await message.reply({
+    embeds: [similarMovesEmbed],
+  });
 
   const reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
   for (let i = 0; i < similarMoves.length; i++) {
@@ -63,16 +64,16 @@ export async function handleSimilarMovesNonInteraction(
     postSelectionEmbed.setFooter({
       text: "A selection has already been made.",
     });
-    message.edit({ embeds: [postSelectionEmbed] });
+    sentMessage.edit({ embeds: [postSelectionEmbed] });
 
     if (!thumbnailImage) {
-      message.reply({
+      sentMessage.reply({
         embeds: [responseEmbed],
       });
       return;
     }
 
-    message.reply({
+    sentMessage.reply({
       embeds: [responseEmbed],
       files: [thumbnailImage],
     });
