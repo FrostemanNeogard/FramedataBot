@@ -48,6 +48,41 @@ export class FramedataService {
 
     const characterCode = characterCodeData.characterCode;
 
+    const validInputCategory = this.checkForAttackCategory(inputs);
+    console.log("Input category:", validInputCategory);
+    if (validInputCategory != null) {
+      const categoryAttacks = await this.getAttacksByCategory(
+        gameCode,
+        characterCode,
+        validInputCategory
+      );
+
+      if (categoryAttacks == null) {
+        const errorEmbed = new EmbedBuilder()
+          .setTitle("ERROR")
+          .setDescription(
+            "An error ocurred when attempting to fetch framedata. Please try again later."
+          )
+          .setColor(COLORS.danger);
+        console.log(`ERROR: Couldn't fetch move categories.`);
+        return {
+          embeds: [errorEmbed],
+        };
+      }
+
+      const allAttacksOfCategoryEmbed = new EmbedBuilder()
+        .setTitle(
+          `${characterCode.toUpperCase()} ${validInputCategory.toUpperCase()} MOVES`
+        )
+        .setDescription(
+          categoryAttacks
+            .map((item, index) => `**${index + 1}.** ${item}`)
+            .join("\n")
+        )
+        .setColor(COLORS.success);
+      return { embeds: [allAttacksOfCategoryEmbed] };
+    }
+
     const response = await this.getFramedataResponse(
       characterCode,
       gameCode,
@@ -143,6 +178,41 @@ export class FramedataService {
     }
 
     return { embeds: [responseEmbed], files: [characterThumbnail] };
+  }
+
+  private async getAttacksByCategory(
+    gameCode: string,
+    characterCode: string,
+    validInputCategory: string
+  ): Promise<string[] | null> {
+    const response = await fetch(
+      `${this.BASE_API_URL}framedata/${gameCode}/${characterCode}/${validInputCategory}`
+    );
+
+    console.log("RESPONSE!!!", response);
+
+    if (response == null || response.status != 200) {
+      return null;
+    }
+
+    return response.json();
+  }
+
+  private checkForAttackCategory(input: string) {
+    const attackCategories = {
+      powercrush: ["powercrush", "pc", "power crush", "powercrushes", "armor"],
+      homing: ["homing"],
+      throw: ["throw", "throws"],
+      parry: ["parry", "sabaki", "parries"],
+    };
+
+    for (const [key, values] of Object.entries(attackCategories)) {
+      if (values.includes(input.toLowerCase())) {
+        return key;
+      }
+    }
+
+    return null;
   }
 
   public createFramedataEmbed(
