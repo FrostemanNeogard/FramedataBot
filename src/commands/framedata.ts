@@ -1,16 +1,11 @@
 import {
   ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   CacheType,
-  CollectorFilter,
   CommandInteraction,
-  MessageActionRowComponentBuilder,
-  ReactionCollectorOptions,
   SlashCommandBuilder,
   SlashCommandStringOption,
-  StringSelectMenuBuilder,
-  StringSelectMenuInteraction,
-  StringSelectMenuOptionBuilder,
-  User,
 } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
 import { FramedataService } from "../service/framedataService";
@@ -99,18 +94,14 @@ export class Framedata {
     const similarMovesEmbed = e.getEmbed();
     const similarMoves = e.getSimilarMoves();
 
-    const select = new StringSelectMenuBuilder()
-      .setCustomId("suggested")
-      .setPlaceholder("Make a selection");
-
+    const row: any = new ActionRowBuilder();
     for (let i = 0; i < similarMoves.length; i++) {
-      select.addOptions(
-        new StringSelectMenuOptionBuilder()
-          .setLabel((i + 1).toString())
-          .setValue((i + 1).toString())
-      );
+      const buttonComponent = new ButtonBuilder()
+        .setCustomId((i + 1).toString())
+        .setLabel((i + 1).toString())
+        .setStyle(ButtonStyle.Primary);
+      row.addComponents(buttonComponent);
     }
-    const row: any = new ActionRowBuilder().addComponents(select);
 
     const response = await interaction.editReply({
       embeds: [similarMovesEmbed],
@@ -124,7 +115,7 @@ export class Framedata {
         filter: collectorFilter,
         time: 60_000,
       });
-      const selectedValue = confirmation.values[0];
+      const selectedValue = Number(confirmation.customId);
 
       if (selectedValue < 1 || selectedValue > similarMoves.length) {
         confirmation.update({ content: "Invalid selection.", components: [] });
@@ -132,8 +123,6 @@ export class Framedata {
       }
 
       const attackData = similarMoves[selectedValue - 1];
-      console.log("Attackdata", attackData);
-
       const thumbnailImage = await this.framedataService.getCharacterThumbnail(
         e.getCharacterCode(),
         e.getGameCode()

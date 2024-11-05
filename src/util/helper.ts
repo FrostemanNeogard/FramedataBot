@@ -1,8 +1,8 @@
 import {
   Message,
   ActionRowBuilder,
-  StringSelectMenuBuilder,
-  StringSelectMenuOptionBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } from "discord.js";
 import { MoveNotFoundError } from "../exceptions/similarMoves";
 import { FramedataService } from "../service/framedataService";
@@ -30,18 +30,14 @@ export async function handleSimilarMovesNonInteraction(
   const similarMovesEmbed = e.getEmbed();
   const similarMoves = e.getSimilarMoves();
 
-  const select = new StringSelectMenuBuilder()
-    .setCustomId("suggested")
-    .setPlaceholder("Make a selection");
-
+  const row: any = new ActionRowBuilder();
   for (let i = 0; i < similarMoves.length; i++) {
-    select.addOptions(
-      new StringSelectMenuOptionBuilder()
-        .setLabel((i + 1).toString())
-        .setValue((i + 1).toString())
-    );
+    const buttonComponent = new ButtonBuilder()
+      .setCustomId((i + 1).toString())
+      .setLabel((i + 1).toString())
+      .setStyle(ButtonStyle.Primary);
+    row.addComponents(buttonComponent);
   }
-  const row: any = new ActionRowBuilder().addComponents(select);
 
   const response = await message.reply({
     embeds: [similarMovesEmbed],
@@ -55,7 +51,7 @@ export async function handleSimilarMovesNonInteraction(
       filter: collectorFilter,
       time: 60_000,
     });
-    const selectedValue = confirmation.values[0];
+    const selectedValue = Number(confirmation.customId);
 
     if (selectedValue < 1 || selectedValue > similarMoves.length) {
       confirmation.update({ content: "Invalid selection.", components: [] });
@@ -63,8 +59,6 @@ export async function handleSimilarMovesNonInteraction(
     }
 
     const attackData = similarMoves[selectedValue - 1];
-    console.log("Attackdata", attackData);
-
     const thumbnailImage = await framedataService.getCharacterThumbnail(
       e.getCharacterCode(),
       e.getGameCode()
