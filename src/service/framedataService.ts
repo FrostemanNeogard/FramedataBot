@@ -146,8 +146,18 @@ export class FramedataService {
     characterName: string,
     thumbnailImage: AttachmentBuilder | null
   ) {
-    const { input, hit_level, damage, startup, block, hit, counter, notes } =
-      attackData;
+    const {
+      input,
+      hit_level,
+      damage,
+      startup,
+      block,
+      hit,
+      counter,
+      notes: unfilteredNotes,
+    } = attackData;
+
+    const notes = unfilteredNotes.filter((i) => i != "");
 
     const responseEmbed = new EmbedBuilder()
       .setTitle(characterName)
