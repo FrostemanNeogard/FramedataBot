@@ -126,12 +126,12 @@ export class Framedata {
       });
       const selectedValue = confirmation.values[0];
 
-      if (selectedValue < 1 || selectedValue > e.getSimilarMoves().length) {
+      if (selectedValue < 1 || selectedValue > similarMoves.length) {
         confirmation.update({ content: "Invalid selection.", components: [] });
         return;
       }
 
-      const attackData = e.getSimilarMoves()[selectedValue - 1];
+      const attackData = similarMoves[selectedValue - 1];
       console.log("Attackdata", attackData);
 
       const thumbnailImage = await this.framedataService.getCharacterThumbnail(
@@ -144,30 +144,16 @@ export class Framedata {
         thumbnailImage
       );
 
-      const postSelectionEmbed = similarMovesEmbed;
-      postSelectionEmbed.setFooter({
-        text: "A selection has already been made.",
-      });
-      interaction.editReply({ embeds: [postSelectionEmbed] });
-
-      if (!thumbnailImage) {
-        interaction.followUp({
-          embeds: [responseEmbed],
-        });
-        return;
-      }
-
-      interaction.followUp({
+      await confirmation.update({
         embeds: [responseEmbed],
         files: [thumbnailImage],
+        components: [],
       });
-
-      await confirmation.update({ components: [] });
     } catch {
       const timeUpEmbed = similarMovesEmbed.setFooter({
         text: `No decision was made by the time this expired.`,
       });
-      interaction.editReply({ embeds: [timeUpEmbed], components: [] });
+      await interaction.editReply({ embeds: [timeUpEmbed], components: [] });
     }
   }
 }
