@@ -1,9 +1,15 @@
 import {
+  ActionRowBuilder,
   CacheType,
+  CollectorFilter,
   CommandInteraction,
+  MessageActionRowComponentBuilder,
   ReactionCollectorOptions,
   SlashCommandBuilder,
   SlashCommandStringOption,
+  StringSelectMenuBuilder,
+  StringSelectMenuInteraction,
+  StringSelectMenuOptionBuilder,
   User,
 } from "discord.js";
 import { Discord, Slash, SlashOption } from "discordx";
@@ -93,28 +99,39 @@ export class Framedata {
     const similarMovesEmbed = e.getEmbed();
     const similarMoves = e.getSimilarMoves();
 
-    interaction.editReply({ embeds: [similarMovesEmbed] });
-    const message = await interaction.fetchReply();
+    const select = new StringSelectMenuBuilder()
+      .setCustomId("suggested")
+      .setPlaceholder("Make a selection");
 
-    const reactions = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣"];
     for (let i = 0; i < similarMoves.length; i++) {
-      message.react(reactions[i]);
+      select.addOptions(
+        new StringSelectMenuOptionBuilder()
+          .setLabel((i + 1).toString())
+          .setValue((i + 1).toString())
+      );
     }
+    const row: any = new ActionRowBuilder().addComponents(select);
 
-    const filter: ReactionCollectorOptions = {
-      filter: (reaction: any) => {
-        return false;
-        // return (
-        //   reactions.includes(reaction.emoji.name) &&
-        //   user.id === interaction.user.id
-        // );
-      },
-    };
+    const response = await interaction.editReply({
+      embeds: [similarMovesEmbed],
+      components: [row],
+    });
 
-    const collector = message.createReactionCollector(filter);
+    const collectorFilter = (i: any) => i.user.id == interaction.user.id;
 
-    setTimeout(async () => {
-      const attackData = e.getSimilarMoves()[0];
+    try {
+      const confirmation: any = await response.awaitMessageComponent({
+        filter: collectorFilter,
+        time: 60_000,
+      });
+      const selectedValue = confirmation.values[0];
+
+      if (selectedValue < 1 || selectedValue > e.getSimilarMoves().length) {
+        confirmation.update({ content: "Invalid selection.", components: [] });
+        return;
+      }
+
+      const attackData = e.getSimilarMoves()[selectedValue - 1];
       console.log("Attackdata", attackData);
 
       const thumbnailImage = await this.framedataService.getCharacterThumbnail(
@@ -144,7 +161,13 @@ export class Framedata {
         embeds: [responseEmbed],
         files: [thumbnailImage],
       });
-      return;
-    }, 2000);
+
+      await confirmation.update({ components: [] });
+    } catch {
+      const timeUpEmbed = similarMovesEmbed.setFooter({
+        text: `No decision was made by the time this expired.`,
+      });
+      interaction.editReply({ embeds: [timeUpEmbed], components: [] });
+    }
   }
 }
