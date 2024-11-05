@@ -2,6 +2,7 @@ import { ArgsOf, Client, Discord, On, Once } from "discordx";
 import "dotenv/config";
 import { FramedataService } from "../service/framedataService";
 import { Events } from "discord.js";
+import { logCommandUsage } from "../util/helper";
 const { CLIENT_ID } = process.env;
 
 @Discord()
@@ -17,12 +18,11 @@ export class EventListener {
     [interaction]: ArgsOf<Events.InteractionCreate>,
     client: Client
   ) {
-    console.log(
-      `\nCommand: "${interaction.toString()}"\n\b was run by: "${
-        interaction.user.globalName
-      }" \n\b in channel: "${interaction.channelId}" \n\b in server: "${
-        interaction.guild?.name
-      }" \n\b at: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`
+    logCommandUsage(
+      interaction.toString(),
+      interaction.user?.globalName,
+      interaction.channelId,
+      interaction.guild?.name
     );
     try {
       client.executeInteraction(interaction);
@@ -58,12 +58,11 @@ export class EventListener {
     const character = args[1];
     const inputs = args.slice(2, args.length).join(" ");
 
-    console.log(
-      `\nShortcut: "/fd8 character:${character} move:${inputs} "\n\b was run by: "${
-        message.member?.displayName
-      }" \n\b in channel: "${message.guildId}" \n\b in server: "${
-        message.guild?.name
-      }" \n\b at: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n`
+    logCommandUsage(
+      `shortcut: "/fd8 character:${character} move:${inputs}`,
+      message.member?.displayName,
+      message.guildId,
+      message.guild?.name
     );
 
     if (
