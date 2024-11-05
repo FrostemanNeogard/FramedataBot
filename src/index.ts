@@ -7,7 +7,11 @@ const { TOKEN, DEV, TEST_GUILD_ID } = process.env;
 
 const client = new Client({
   botId: "test",
-  intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages],
+  intents: [
+    IntentsBitField.Flags.Guilds,
+    IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMessageReactions,
+  ],
   botGuilds: DEV ? [TEST_GUILD_ID ?? ""] : undefined,
 });
 
