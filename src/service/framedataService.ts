@@ -5,6 +5,7 @@ import { existsSync } from "fs";
 import * as path from "path";
 import { MoveNotFoundError } from "../exceptions/similarMoves";
 import { TekkenAttackData } from "../types/framedata";
+import { generateInputString } from "../util/helper";
 
 export class FramedataService {
   private readonly zeroWidthSpace: string = "​";
@@ -116,8 +117,6 @@ export class FramedataService {
       notes,
     } = data[0];
 
-    const inputString = name?.length > 0 ? `${input} (${name})` : input;
-
     const characterThumbnail = await this.getCharacterThumbnail(
       characterCode,
       gameCode
@@ -125,7 +124,7 @@ export class FramedataService {
 
     var responseEmbed = this.createFramedataEmbed(
       {
-        input: inputString,
+        input,
         name,
         hit_level,
         damage,
@@ -152,6 +151,7 @@ export class FramedataService {
     thumbnailImage: AttachmentBuilder | null
   ) {
     const {
+      name,
       input,
       hit_level,
       damage,
@@ -161,12 +161,11 @@ export class FramedataService {
       counter,
       notes: unfilteredNotes,
     } = attackData;
-
     const notes = unfilteredNotes.filter((i) => i != "");
-
+    const inputString = generateInputString(input, name);
     const responseEmbed = new EmbedBuilder()
-      .setTitle(characterName)
-      .setDescription(input)
+      .setTitle(characterName.toUpperCase())
+      .setDescription(inputString)
       .setColor(COLORS.success)
       .setFooter({ text: EMBED_FIELDS.footer })
       .setFields(
