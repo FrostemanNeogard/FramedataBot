@@ -96,7 +96,12 @@ export class FramedataService {
         })
         .setColor(COLORS.warning);
       console.log(`Sending "Similar Moves" embed for ${character}'s ${inputs}`);
-      throw new MoveNotFoundError(warningEmbed, data.similar_moves);
+      throw new MoveNotFoundError(
+        gameCode,
+        characterCode,
+        warningEmbed,
+        data.similar_moves
+      );
     }
 
     const {
