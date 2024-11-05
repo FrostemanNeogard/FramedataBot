@@ -1,4 +1,4 @@
-export type TekkenFramedata = {
+export type TekkenFramedataResponse = {
   name: string;
   input: string;
   hit_level: string;
@@ -9,5 +9,17 @@ export type TekkenFramedata = {
   counter: string;
   alternateInputs: string[];
   categories: string[];
+  notes: string[];
+};
+
+export type TekkenAttackData = {
+  name: string;
+  input: string;
+  hit_level: string;
+  damage: string;
+  startup: string;
+  block: string;
+  hit: string;
+  counter: string;
   notes: string[];
 };
