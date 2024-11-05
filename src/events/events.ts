@@ -88,7 +88,6 @@ export class EventListener {
       message.reply(responseEmbed);
     } catch (e) {
       if (e instanceof MoveNotFoundError) {
-        console.log("Caught movenotfound error!!!!!!");
         handleSimilarMovesNonInteraction(e, message);
       } else {
         console.log(
