@@ -46,38 +46,31 @@ export async function handleSimilarMovesNonInteraction(
 
   const collectorFilter = (i: any) => i.user.id == message.author.id;
 
-  try {
-    const confirmation: any = await response.awaitMessageComponent({
-      filter: collectorFilter,
-      time: 60_000,
-    });
-    const selectedValue = Number(confirmation.customId);
+  const confirmation: any = await response.awaitMessageComponent({
+    filter: collectorFilter,
+    time: 360_000,
+  });
+  const selectedValue = Number(confirmation.customId);
 
-    if (selectedValue < 1 || selectedValue > similarMoves.length) {
-      confirmation.update({ content: "Invalid selection.", components: [] });
-      return;
-    }
-
-    const attackData = similarMoves[selectedValue - 1];
-    const thumbnailImage = await framedataService.getCharacterThumbnail(
-      e.getCharacterCode(),
-      e.getGameCode()
-    );
-    const responseEmbed = framedataService.createFramedataEmbed(
-      attackData,
-      e.getCharacterCode(),
-      thumbnailImage
-    );
-
-    await confirmation.update({
-      embeds: [responseEmbed],
-      files: [thumbnailImage],
-      components: [],
-    });
-  } catch {
-    const timeUpEmbed = similarMovesEmbed.setFooter({
-      text: `No decision was made by the time this expired.`,
-    });
-    await response.edit({ embeds: [timeUpEmbed], components: [] });
+  if (selectedValue < 1 || selectedValue > similarMoves.length) {
+    confirmation.update({ content: "Invalid selection.", components: [] });
+    return;
   }
+
+  const attackData = similarMoves[selectedValue - 1];
+  const thumbnailImage = await framedataService.getCharacterThumbnail(
+    e.getCharacterCode(),
+    e.getGameCode()
+  );
+  const responseEmbed = framedataService.createFramedataEmbed(
+    attackData,
+    e.getCharacterCode(),
+    thumbnailImage
+  );
+
+  await confirmation.update({
+    embeds: [responseEmbed],
+    files: [thumbnailImage],
+    components: [],
+  });
 }
