@@ -113,7 +113,7 @@ export class Framedata {
     try {
       const confirmation: any = await response.awaitMessageComponent({
         filter: collectorFilter,
-        time: 60_000,
+        time: 360_000,
       });
       const selectedValue = Number(confirmation.customId);
 
