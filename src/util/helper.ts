@@ -46,31 +46,35 @@ export async function handleSimilarMovesNonInteraction(
 
   const collectorFilter = (i: any) => i.user.id == message.author.id;
 
-  const confirmation: any = await response.awaitMessageComponent({
-    filter: collectorFilter,
-    time: 360_000,
-  });
-  const selectedValue = Number(confirmation.customId);
+  try {
+    const confirmation: any = await response.awaitMessageComponent({
+      filter: collectorFilter,
+      time: 360_000,
+    });
+    const selectedValue = Number(confirmation.customId);
 
-  if (selectedValue < 1 || selectedValue > similarMoves.length) {
-    confirmation.update({ content: "Invalid selection.", components: [] });
-    return;
+    if (selectedValue < 1 || selectedValue > similarMoves.length) {
+      confirmation.update({ content: "Invalid selection.", components: [] });
+      return;
+    }
+
+    const attackData = similarMoves[selectedValue - 1];
+    const thumbnailImage = await framedataService.getCharacterThumbnail(
+      e.getCharacterCode(),
+      e.getGameCode()
+    );
+    const responseEmbed = framedataService.createFramedataEmbed(
+      attackData,
+      e.getCharacterCode(),
+      thumbnailImage
+    );
+
+    await confirmation.update({
+      embeds: [responseEmbed],
+      files: [thumbnailImage],
+      components: [],
+    });
+  } catch {
+    console.log("Timed out.");
   }
-
-  const attackData = similarMoves[selectedValue - 1];
-  const thumbnailImage = await framedataService.getCharacterThumbnail(
-    e.getCharacterCode(),
-    e.getGameCode()
-  );
-  const responseEmbed = framedataService.createFramedataEmbed(
-    attackData,
-    e.getCharacterCode(),
-    thumbnailImage
-  );
-
-  await confirmation.update({
-    embeds: [responseEmbed],
-    files: [thumbnailImage],
-    components: [],
-  });
 }
