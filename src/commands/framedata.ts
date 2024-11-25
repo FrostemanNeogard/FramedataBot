@@ -139,10 +139,7 @@ export class Framedata {
         components: [],
       });
     } catch {
-      const timeUpEmbed = similarMovesEmbed.setFooter({
-        text: `No decision was made by the time this expired.`,
-      });
-      await interaction.editReply({ embeds: [timeUpEmbed], components: [] });
+      console.log("Timed out");
     }
   }
 }
