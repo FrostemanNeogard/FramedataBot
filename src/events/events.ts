@@ -69,7 +69,6 @@ export class EventListener {
       message.guild?.name
     );
 
-    # TODO: Fix this
     if (
       !client.guilds.cache
         .get(message.guildId ?? "")
