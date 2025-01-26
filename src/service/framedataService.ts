@@ -189,8 +189,6 @@ export class FramedataService {
       `${this.BASE_API_URL}framedata/${gameCode}/${characterCode}/categories/${validInputCategory}`
     );
 
-    console.log("RESPONSE!!!", response);
-
     if (response == null || response.status != 200) {
       return null;
     }
