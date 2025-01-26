@@ -186,7 +186,7 @@ export class FramedataService {
     validInputCategory: string
   ): Promise<string[] | null> {
     const response = await fetch(
-      `${this.BASE_API_URL}framedata/${gameCode}/${characterCode}/${validInputCategory}`
+      `${this.BASE_API_URL}framedata/${gameCode}/${characterCode}/categories/${validInputCategory}`
     );
 
     console.log("RESPONSE!!!", response);
@@ -320,15 +320,9 @@ export class FramedataService {
     inputs: string
   ) {
     try {
-      return await fetch(`${this.BASE_API_URL}framedata`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          characterCode: characterCode,
-          gameCode: gameCode,
-          input: inputs,
-        }),
-      });
+      return await fetch(
+        `${this.BASE_API_URL}framedata/${gameCode}/${characterCode}/moves/${inputs}`
+      );
     } catch (err) {
       console.error(`An error ocurred when fetching framedata: ${err}`);
       return null;
