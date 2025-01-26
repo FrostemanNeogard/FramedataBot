@@ -69,6 +69,7 @@ export class EventListener {
       message.guild?.name
     );
 
+    await client.guilds.fetch();
     const hasProperPermissions = !client.guilds.cache
       .get(message.guildId ?? "")
       ?.members.me?.permissionsIn(message.channelId)
@@ -92,10 +93,14 @@ export class EventListener {
         inputs,
         "tekken8"
       );
-      message.reply(responseEmbed);
+      console.log("Replying...");
+      await message.reply(responseEmbed);
+      console.log("Response sent!");
     } catch (e) {
       if (e instanceof MoveNotFoundError) {
-        handleSimilarMovesNonInteraction(e, message);
+        console.log('Getting "Similar Moves" embed...');
+        await handleSimilarMovesNonInteraction(e, message);
+        console.log('Sent "Similar Moves" embed!');
       } else {
         console.log(
           "An unknown error ocurred when attempting to execute 'fd8' shortcut:",
