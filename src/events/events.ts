@@ -69,15 +69,22 @@ export class EventListener {
       message.guild?.name
     );
 
-    if (
-      !client.guilds.cache
-        .get(message.guildId ?? "")
-        ?.members.me?.permissionsIn(message.channelId)
-        .has("SendMessages")
-    ) {
+    const hasProperPermissions = !client.guilds.cache
+      .get(message.guildId ?? "")
+      ?.members.me?.permissionsIn(message.channelId)
+      .has("SendMessages");
+
+    if (hasProperPermissions) {
       console.log("Missing permissions to send message, aborting");
       return;
     }
+
+    console.log(
+      "Proceeding with the following permissions:",
+      client.guilds.cache
+        .get(message.guildId ?? "")
+        ?.members.me?.permissionsIn(message.channelId)
+    );
 
     try {
       const responseEmbed = await this.framedataService.getFramedataEmbed(
