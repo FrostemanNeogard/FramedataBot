@@ -80,27 +80,16 @@ export class EventListener {
       return;
     }
 
-    console.log(
-      "Proceeding with the following permissions:",
-      client.guilds.cache
-        .get(message.guildId ?? "")
-        ?.members.me?.permissionsIn(message.channelId)
-    );
-
     try {
       const responseEmbed = await this.framedataService.getFramedataEmbed(
         character,
         inputs,
         "tekken8"
       );
-      console.log("Replying...");
       await message.reply(responseEmbed);
-      console.log("Response sent!");
     } catch (e) {
       if (e instanceof MoveNotFoundError) {
-        console.log('Getting "Similar Moves" embed...');
         await handleSimilarMovesNonInteraction(e, message);
-        console.log('Sent "Similar Moves" embed!');
       } else {
         console.log(
           "An unknown error ocurred when attempting to execute 'fd8' shortcut:",
