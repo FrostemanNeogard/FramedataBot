@@ -127,7 +127,7 @@ export class FramedataService {
       const warningEmbed = new EmbedBuilder()
         .setTitle(`Attack not found: ${inputs}`)
         .setFields({
-          name: "Similar moves:",
+          name: "Similar Moves:",
           value: similarMoveNames.length > 0 ? similarMoveNames : "None found.",
         })
         .setColor(COLORS.warning);
