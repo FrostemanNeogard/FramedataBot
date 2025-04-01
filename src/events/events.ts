@@ -1,12 +1,13 @@
 import { ArgsOf, Client, Discord, On, Once } from "discordx";
 import "dotenv/config";
 import { FramedataService } from "../service/framedataService";
-import { Events } from "discord.js";
+import { AttachmentBuilder, Events } from "discord.js";
 import {
   handleSimilarMovesNonInteraction,
   logCommandUsage,
 } from "../util/helper";
 import { MoveNotFoundError } from "../exceptions/similarMoves";
+import * as path from "path";
 const { CLIENT_ID } = process.env;
 
 @Discord()
@@ -86,6 +87,22 @@ export class EventListener {
         inputs,
         "tekken8"
       );
+
+      // vvv RICK ROLL LOGIC vvv
+      const isRickRoll = Math.floor(Math.random() * 50) == 2;
+
+      if (isRickRoll) {
+        const imageFilePath = path.join(__dirname, `../images/misc/tekken.gif`);
+        const rickRollGif = new AttachmentBuilder(imageFilePath, {
+          name: `tekken.gif`,
+        });
+        await message.reply({
+          files: [rickRollGif],
+        });
+        return;
+      }
+      // ^^^ RICK ROLL LOGIC ^^^
+
       await message.reply(responseEmbed);
     } catch (e) {
       if (e instanceof MoveNotFoundError) {
