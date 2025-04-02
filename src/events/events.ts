@@ -88,21 +88,6 @@ export class EventListener {
         "tekken8"
       );
 
-      // vvv RICK ROLL LOGIC vvv
-      const isRickRoll = Math.floor(Math.random() * 50) == 2;
-
-      if (isRickRoll) {
-        const imageFilePath = path.join(__dirname, `../images/misc/tekken.gif`);
-        const rickRollGif = new AttachmentBuilder(imageFilePath, {
-          name: `tekken.gif`,
-        });
-        await message.reply({
-          files: [rickRollGif],
-        });
-        return;
-      }
-      // ^^^ RICK ROLL LOGIC ^^^
-
       await message.reply(responseEmbed);
     } catch (e) {
       if (e instanceof MoveNotFoundError) {
