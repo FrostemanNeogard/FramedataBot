@@ -13,9 +13,11 @@ export class FramedataService {
 
   async getFramedataEmbed(
     character: string,
-    inputs: string,
+    unformattedInputs: string,
     gameCode: string
   ): Promise<DiscordEmbedResponse> {
+    const inputs = formatInputsForHtml(unformattedInputs);
+
     const characterCodeResponse = await this.getCharacterCodeResponse(
       gameCode,
       character
@@ -333,4 +335,8 @@ export class FramedataService {
     }
     return input;
   }
+}
+function formatInputsForHtml(unformattedInputs: string) {
+  const removedSlashes = encodeURI(unformattedInputs);
+  return removedSlashes.replace("/", "%2F");
 }
