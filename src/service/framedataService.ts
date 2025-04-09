@@ -171,7 +171,7 @@ export class FramedataService {
         counter,
         notes,
       },
-      character,
+      characterCode.toUpperCase(),
       characterThumbnail
     );
 

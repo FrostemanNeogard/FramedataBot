@@ -54,7 +54,7 @@ export class Info {
   ) {
     try {
       await interaction.deferReply();
-      const devServer = await interaction.client.guilds.cache.get(
+      const devServer = interaction.client.guilds.cache.get(
         TEST_GUILD_ID ?? ""
       );
       if (!devServer) {
