@@ -13,11 +13,9 @@ export class FramedataService {
 
   async getFramedataEmbed(
     character: string,
-    unformattedInputs: string,
+    inputs: string,
     gameCode: string
   ): Promise<DiscordEmbedResponse> {
-    const inputs = formatInputsForHtml(unformattedInputs);
-
     const characterCodeResponse = await this.getCharacterCodeResponse(
       gameCode,
       character
@@ -319,9 +317,10 @@ export class FramedataService {
     gameCode: string,
     inputs: string
   ) {
+    const encodedInputs = formatInputsForHtml(inputs);
     try {
       return await fetch(
-        `${this.BASE_API_URL}framedata/${gameCode}/${characterCode}/moves/${inputs}`
+        `${this.BASE_API_URL}framedata/${gameCode}/${characterCode}/moves/${encodedInputs}`
       );
     } catch (err) {
       console.error(`An error ocurred when fetching framedata: ${err}`);
@@ -336,6 +335,7 @@ export class FramedataService {
     return input;
   }
 }
+
 function formatInputsForHtml(unformattedInputs: string) {
   const removedSlashes = encodeURI(unformattedInputs);
   return removedSlashes.replace("/", "%2F");
