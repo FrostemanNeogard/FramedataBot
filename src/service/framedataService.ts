@@ -36,7 +36,7 @@ export class FramedataService {
 
     const characterCodeData = await characterCodeResponse.json();
 
-    if (characterCodeData.statusCode == 404) {
+    if (characterCodeData.statusCode == 400) {
       const errorEmbed = new EmbedBuilder()
         .setTitle("ERROR")
         .setDescription(
